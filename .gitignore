@@ -7,6 +7,8 @@
 *.userosscache
 *.sln.docstates
 
+/comp260-Client/SDL_project/boost_1_63_0
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

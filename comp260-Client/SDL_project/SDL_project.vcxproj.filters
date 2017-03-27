@@ -28,20 +28,11 @@
     <ClCompile Include="ReachedGoalState.cpp">
       <Filter>Source Files\Character Classes\Character states</Filter>
     </ClCompile>
-    <ClCompile Include="Fire.cpp">
-      <Filter>Source Files\Disaster Classes</Filter>
-    </ClCompile>
     <ClCompile Include="Level.cpp">
-      <Filter>Source Files\Level Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
       <Filter>Source Files\Level Classes</Filter>
     </ClCompile>
     <ClCompile Include="Cell.cpp">
       <Filter>Source Files\Level Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Oxygen.cpp">
-      <Filter>Source Files\Disaster Classes</Filter>
     </ClCompile>
     <ClCompile Include="InitialisationError.cpp">
       <Filter>Source Files\Main Game Classes</Filter>
@@ -58,62 +49,11 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Main Game Classes</Filter>
     </ClCompile>
-    <ClCompile Include="RoomDesign.cpp">
-      <Filter>Source Files\Level Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="PathFinder.cpp">
-      <Filter>Source Files\Level Classes\PathFinding</Filter>
-    </ClCompile>
-    <ClCompile Include="Point.cpp">
-      <Filter>Source Files\Level Classes\PathFinding</Filter>
-    </ClCompile>
-    <ClCompile Include="TraversePath.cpp">
-      <Filter>Source Files\Level Classes\PathFinding</Filter>
-    </ClCompile>
     <ClCompile Include="NPC.cpp">
       <Filter>Source Files\Character Classes\NPC Classes</Filter>
     </ClCompile>
     <ClCompile Include="GameSettings.cpp">
       <Filter>Source Files\Main Game Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolBar.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerInteraction.cpp">
-      <Filter>Source Files\Level Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectiveManager.cpp">
-      <Filter>Source Files\Main Game Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Items.cpp">
-      <Filter>Source Files\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="Hydroponics.cpp">
-      <Filter>Source Files\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="EscapeMenu.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="DockingDoors.cpp">
-      <Filter>Source Files\Dock</Filter>
-    </ClCompile>
-    <ClCompile Include="Icon.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="Ship.cpp">
-      <Filter>Source Files\Dock</Filter>
-    </ClCompile>
-    <ClCompile Include="CargoShip.cpp">
-      <Filter>Source Files\Dock\cargoShip</Filter>
-    </ClCompile>
-    <ClCompile Include="ShipManager.cpp">
-      <Filter>Source Files\Dock</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerStats.cpp">
-      <Filter>Source Files\GUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,37 +63,10 @@
     <ClInclude Include="MainCharacter.h">
       <Filter>Headers\Character Classes</Filter>
     </ClInclude>
-    <ClInclude Include="WanderingState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerControlledState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="IdleState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="DeadState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="SuffocatingState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="ReachedGoalState.h">
-      <Filter>Headers\Character Classes\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Fire.h">
-      <Filter>Headers\Disaster Classes</Filter>
-    </ClInclude>
     <ClInclude Include="Cell.h">
       <Filter>Headers\Level Classes</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
-      <Filter>Headers\Level Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
       <Filter>Headers\Level Classes</Filter>
     </ClInclude>
     <ClInclude Include="InitialisationError.h">
@@ -171,71 +84,14 @@
     <ClInclude Include="Texture.h">
       <Filter>Headers\Main Game Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Oxygen.h">
-      <Filter>Headers\Disaster Classes</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
       <Filter>Headers\Main Game Classes</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Headers\Main Game Classes</Filter>
     </ClInclude>
-    <ClInclude Include="RoomDesign.h">
-      <Filter>Headers\Level Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="PathFinder.h">
-      <Filter>Headers\Level Classes\PathFinding</Filter>
-    </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>Headers\Level Classes\PathFinding</Filter>
-    </ClInclude>
-    <ClInclude Include="TraversePath.h">
-      <Filter>Headers\Level Classes\PathFinding</Filter>
-    </ClInclude>
-    <ClInclude Include="NPC.h">
-      <Filter>Headers\Character Classes\NPC Classes</Filter>
-    </ClInclude>
     <ClInclude Include="GameSettings.h">
       <Filter>Headers\Main Game Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI.h">
-      <Filter>Headers\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolBar.h">
-      <Filter>Headers\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerInteraction.h">
-      <Filter>Headers\Level Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectiveManager.h">
-      <Filter>Headers\Main Game Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Items.h">
-      <Filter>Headers\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Hydroponics.h">
-      <Filter>Headers\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="EscapeMenu.h">
-      <Filter>Headers\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="DockingDoors.h">
-      <Filter>Headers\Dock</Filter>
-    </ClInclude>
-    <ClInclude Include="Icon.h">
-      <Filter>Headers\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="Ship.h">
-      <Filter>Headers\Dock</Filter>
-    </ClInclude>
-    <ClInclude Include="CargoShip.h">
-      <Filter>Headers\Dock\CargoShip</Filter>
-    </ClInclude>
-    <ClInclude Include="ShipManager.h">
-      <Filter>Headers\Dock</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerStats.h">
-      <Filter>Headers\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -258,20 +114,11 @@
     <Filter Include="Headers\Character Classes">
       <UniqueIdentifier>{0072aba4-18bc-42ba-8ec0-c5d7603daa9d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\Character Classes\States">
-      <UniqueIdentifier>{a193ebfb-e89c-4284-aea5-7f8082c325be}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Disaster Classes">
-      <UniqueIdentifier>{c63de961-89a3-4296-9133-074379e47619}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers\Level Classes">
       <UniqueIdentifier>{08f85d67-6788-4104-9167-eb2fc004eebe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Level Classes">
       <UniqueIdentifier>{fd541410-06d9-4c7a-8100-8879ba19dc6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Disaster Classes">
-      <UniqueIdentifier>{2c03c8d0-c3f1-46df-b2d4-4d9faff506ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Character Classes">
       <UniqueIdentifier>{b01eded0-b789-4e14-afee-baa8dc6f46dc}</UniqueIdentifier>
@@ -285,41 +132,8 @@
     <Filter Include="Source Files\Main Game Classes">
       <UniqueIdentifier>{312cdcf3-796f-49f3-bd1e-c20c8229fb53}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Level Classes\PathFinding">
-      <UniqueIdentifier>{78670b3c-6242-4d7a-8ae8-647743691a9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Level Classes\PathFinding">
-      <UniqueIdentifier>{37765115-50b9-4cbb-80f0-1cdc119b11d4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Character Classes\NPC Classes">
       <UniqueIdentifier>{5948eb68-75d0-4e4b-a7da-736d9c4df11e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Character Classes\NPC Classes">
-      <UniqueIdentifier>{fe432389-1c62-43a4-803c-135f08cd75fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\GUI">
-      <UniqueIdentifier>{0d827652-d7fc-41e7-b8a4-5e5b0aff302e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\GUI">
-      <UniqueIdentifier>{338eb718-5c1e-43ae-837d-1b797090963e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Items">
-      <UniqueIdentifier>{655ecf84-39d8-4683-bd95-e94648c87583}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Items">
-      <UniqueIdentifier>{79959b5a-2da3-4857-b606-f7000ed433ea}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Dock">
-      <UniqueIdentifier>{f3cd8b75-d734-4b25-ad70-108ec61f0603}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Dock">
-      <UniqueIdentifier>{9248f0cd-5552-460f-a777-b534b07272dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Headers\Dock\CargoShip">
-      <UniqueIdentifier>{37dc8c72-527e-46c4-beef-15aea3bb8749}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Dock\cargoShip">
-      <UniqueIdentifier>{906c2536-2766-4050-a74b-8bb50e56d321}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

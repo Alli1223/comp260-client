@@ -1,6 +1,7 @@
 #pragma once
 #include"Level.h"
-#include <boost/lambda/lambda.hpp>
+
+
 class WanderingState;
 class CharacterState;
 

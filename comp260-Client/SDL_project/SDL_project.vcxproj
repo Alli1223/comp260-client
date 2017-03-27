@@ -158,78 +158,32 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CargoShip.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Character.h" />
-    <ClInclude Include="CharacterState.h" />
-    <ClInclude Include="DeadState.h" />
-    <ClInclude Include="DockingDoors.h" />
-    <ClInclude Include="EscapeMenu.h" />
     <ClInclude Include="GameSettings.h" />
-    <ClInclude Include="GUI.h" />
-    <ClInclude Include="Hydroponics.h" />
-    <ClInclude Include="Icon.h" />
-    <ClInclude Include="Items.h" />
-    <ClInclude Include="PlayerInteraction.h" />
-    <ClInclude Include="Fire.h" />
-    <ClInclude Include="NPC.h" />
-    <ClInclude Include="ObjectiveManager.h" />
-    <ClInclude Include="PathFinder.h" />
-    <ClInclude Include="PlayerStats.h" />
-    <ClInclude Include="Point.h" />
-    <ClInclude Include="RoomDesign.h" />
     <ClInclude Include="Level.h" />
-    <ClInclude Include="IdleState.h" />
     <ClInclude Include="InitialisationError.h" />
-    <ClInclude Include="ReachedGoalState.h" />
-    <ClInclude Include="Ship.h" />
-    <ClInclude Include="ShipManager.h" />
-    <ClInclude Include="SuffocatingState.h" />
     <ClInclude Include="MainCharacter.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Oxygen.h" />
-    <ClInclude Include="PlayerControlledState.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SDL_project.h" />
     <ClInclude Include="SpaceGame.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="ToolBar.h" />
-    <ClInclude Include="TraversePath.h" />
-    <ClInclude Include="WanderingState.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CargoShip.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CharacterState.cpp" />
     <ClCompile Include="DeadState.cpp" />
-    <ClCompile Include="DockingDoors.cpp" />
-    <ClCompile Include="EscapeMenu.cpp" />
     <ClCompile Include="GameSettings.cpp" />
-    <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="Hydroponics.cpp" />
-    <ClCompile Include="Icon.cpp" />
-    <ClCompile Include="Items.cpp" />
-    <ClCompile Include="PlayerInteraction.cpp" />
-    <ClCompile Include="Fire.cpp" />
     <ClCompile Include="NPC.cpp" />
-    <ClCompile Include="ObjectiveManager.cpp" />
-    <ClCompile Include="PathFinder.cpp" />
-    <ClCompile Include="PlayerStats.cpp" />
-    <ClCompile Include="Point.cpp" />
-    <ClCompile Include="RoomDesign.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="InitialisationError.cpp" />
     <ClCompile Include="ReachedGoalState.cpp" />
-    <ClCompile Include="Ship.cpp" />
-    <ClCompile Include="ShipManager.cpp" />
     <ClCompile Include="SuffocatingState.cpp" />
     <ClCompile Include="MainCharacter.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="Oxygen.cpp" />
     <ClCompile Include="PlayerControlledState.cpp" />
     <ClCompile Include="SDL_project.cpp" />
     <ClCompile Include="SpaceGame.cpp" />
@@ -240,8 +194,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="ToolBar.cpp" />
-    <ClCompile Include="TraversePath.cpp" />
     <ClCompile Include="WanderingState.cpp" />
   </ItemGroup>
   <ItemGroup>

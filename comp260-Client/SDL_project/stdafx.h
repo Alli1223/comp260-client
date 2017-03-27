@@ -34,3 +34,13 @@
 #include <queue>
 #include <set>
 
+// Networking includes
+#include <boost/array.hpp>
+#include <boost/asio.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/asio/write.hpp>
+#include <boost/asio/buffer.hpp>
+#include <boost/asio/ip/tcp.hpp>
+
+using boost::asio::ip::tcp;
+using namespace boost::asio::ip;

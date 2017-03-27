@@ -2,29 +2,16 @@
 
 #include "Texture.h"
 #include "Level.h"
-#include "Map.h"
 #include "Point.h"
 #include "SDL2_image-2.0.1\include\SDL_image.h"
 #include "Cell.h"
 #include "MainCharacter.h"
-#include "NPC.h"
-#include "IdleState.h"
-#include "Oxygen.h"
-#include "Fire.h"
-#include "RoomDesign.h"
-#include "PlayerInteraction.h"
-#include "PathFinder.h"
-#include "TraversePath.h"
-#include "ObjectiveManager.h"
 #include "GameSettings.h"
 #include "GUI.h"
 #include "ToolBar.h"
 #include "Items.h"
 #include "Hydroponics.h"
 #include "EscapeMenu.h"
-#include "DockingDoors.h"
-#include "ShipManager.h"
-#include "PlayerStats.h"
 //! The main class
 /*!
 This is the main class where the game is laoded and run. 
@@ -50,18 +37,7 @@ public:
 	GameSettings gameSettings;
 
 	
-	//! Pathfinding function
-	void SpaceGame::drawPath(Point& point, Level& level);
-
-	//! Conains the list of nodes that makes the path
-	std::vector<Point> path;
-	
-	//! Contains a list of all the hydroponic farms
-	std::vector<Hydroponics> allHydroponicsFarms;
-
-	//! Contains a list of all the ship
-	std::vector<Ship> allShips;
-
+	int SpaceGame::networkingTCP(int argc, char* argv[]);
 
 	//! The window width 
 	int WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
@@ -69,9 +45,6 @@ public:
 	int WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT;
 	//! Coordinates of the mouse 
 	int mouse_X, mouse_Y;
-
-	//! Fog of War distance
-	int fogOfWar = WINDOW_WIDTH;
 private:
 
 	//! start point and end point for pathfinding

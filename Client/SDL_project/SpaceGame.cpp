@@ -113,7 +113,7 @@ void SpaceGame::run()
 				agentManager.SpawnAgent("NPC", agentManager.allAgents, mouse_X, mouse_Y);
 		}
 		
-
+		networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
 		networkClient.RecieveMessage();
 
 		

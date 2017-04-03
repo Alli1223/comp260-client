@@ -35,6 +35,7 @@
 #include <set>
 #include <list>
 #include <math.h>
+#include <fstream>
 #define PI 3.14159265
 
 #include <boost/asio.hpp>

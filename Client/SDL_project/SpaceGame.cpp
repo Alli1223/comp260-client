@@ -40,15 +40,13 @@ void SpaceGame::run()
 	// Creates a grid of cells
 	level.makeGrid(WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	// Choose whether to generate or load a map
-	//mapLoader.LoadMap("Resources\\Map\\Default_map.txt", level);
-	//mapLoader.generateMap(level, designroom);
-
-
-
 	running = true;
 	unsigned int timer = 0;
 	int cellSize = level.getCellSize();
+
+
+
+	networkClient.sendTCPMessage("127.0.01", 8080, "Hello");
 
 	// Main loop
 	while (running)

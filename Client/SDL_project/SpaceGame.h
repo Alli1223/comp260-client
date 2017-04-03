@@ -22,7 +22,7 @@
 #include "PlayerStats.h"
 #include "CellRendering.h"
 #include "Agent.h"
-
+#include "NetworkClient.h"
 
 //! The main class
 /*!
@@ -59,6 +59,7 @@ public:
 	PlayerStats playerstats;
 	CellRendering cellrenderer;
 	Hydroponics hydroponics;
+	NetworkClient networkClient;
 
 	//! Conains the list of nodes that makes the path
 	//std::vector<Point> path;

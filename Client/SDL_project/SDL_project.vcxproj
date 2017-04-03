@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>SDL2-2.0.4\include;SDL2_image-2.0.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>SDL2-2.0.4\lib\x86;SDL2_image-2.0.1\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>SDL2-2.0.4\include;SDL2_image-2.0.1\include;boost_1_63_0;$(IncludePath)</IncludePath>
+    <LibraryPath>SDL2-2.0.4\lib\x86;SDL2_image-2.0.1\lib\x86;boost_1_63_0\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -116,6 +116,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>boost_1_57_0\stage\lib;SDL_project\boost_1_63_0\stage\lib;SDL_project\boost_1_63_0\libs\asio;SDL_project\boost_1_63_0\libs\asio\test;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

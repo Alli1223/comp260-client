@@ -38,5 +38,8 @@
 #define PI 3.14159265
 
 #include <boost/asio.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
+#include <boost/array.hpp>
 
 using boost::asio::ip::tcp;

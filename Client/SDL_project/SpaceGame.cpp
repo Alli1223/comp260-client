@@ -44,13 +44,19 @@ void SpaceGame::run()
 	unsigned int timer = 0;
 	int cellSize = level.getCellSize();
 
+	
 
-
-	networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
+	//networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
 
 	// Main loop
 	while (running)
 	{
+		// Networking
+		networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
+		networkClient.RecieveMessage();
+		networkClient.NetworkUpdate();
+
+
 		// Handle events
 		SDL_Event ev;
 		if (SDL_PollEvent(&ev))
@@ -113,8 +119,19 @@ void SpaceGame::run()
 				agentManager.SpawnAgent("NPC", agentManager.allAgents, mouse_X, mouse_Y);
 		}
 		
-		networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
-		networkClient.RecieveMessage();
+		
+		if (FillLevelWithCells)
+		{
+			for (int x = 0; x < level.grid.size(); x++)
+			{
+				for (int y = 0; y < level.grid[x].size(); y++)
+				{
+					level.grid[x][y]->isRoom = true;
+					
+					FillLevelWithCells = false;
+				}
+			}
+		}
 
 		
 		//////////////////////////////////

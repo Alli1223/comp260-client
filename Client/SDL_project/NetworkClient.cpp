@@ -12,6 +12,13 @@ NetworkClient::~NetworkClient()
 {
 }
 
+// Update every frame
+void NetworkClient::NetworkUpdate()
+{
+	// Create a new TCP listener thread
+	std::thread server_thread();
+}
+
 void NetworkClient::sendTCPMessage(std::string host, int port, std::string message)
 {
 	boost::asio::io_service ios;
@@ -30,8 +37,37 @@ void NetworkClient::sendTCPMessage(std::string host, int port, std::string messa
 	socket.close();
 }
 
+void server_thread() {
+	try
+	{
+		boost::asio::io_service io_service;
+		boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080));
+
+		{
+			boost::asio::ip::tcp::socket socket(io_service);
+			acceptor.accept(socket);
+
+			boost::asio::streambuf sb;
+			boost::system::error_code ec;
+			while (boost::asio::read(socket, sb, ec)) {
+				std::cout << "received: '" << &sb << "'\n";
+
+				if (ec) {
+					std::cout << "status: " << ec.message() << "\n";
+					break;
+				}
+			}
+		}
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << std::endl;
+	}
+}
+
 void NetworkClient::RecieveMessage()
 {
+	
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
 	boost::array<char, 128> data;

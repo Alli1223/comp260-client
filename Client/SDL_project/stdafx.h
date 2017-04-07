@@ -36,6 +36,7 @@
 #include <list>
 #include <math.h>
 #include <fstream>
+#include <thread>
 #define PI 3.14159265
 
 #include <boost/asio.hpp>

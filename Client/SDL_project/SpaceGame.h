@@ -77,6 +77,8 @@ public:
 	//! Coordinates of the mouse 
 	int mouse_X, mouse_Y;
 
+	bool FillLevelWithCells = true;
+
 private:
 
 	//! start point and end point for pathfinding

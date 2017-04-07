@@ -52,7 +52,9 @@ void SpaceGame::run()
 	while (running)
 	{
 		// Networking
-		networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
+		
+		if(SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_MIDDLE))
+			networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
 		networkClient.RecieveMessage();
 		networkClient.NetworkUpdate();
 
@@ -101,16 +103,6 @@ void SpaceGame::run()
 
 		// Renders the background image
 		backgroundTexture.render(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-
-		/* Opens the door when a player goes through
-		//characterInteraction.Interaction(room, characterOne, oxygen);
-
-		//ship management
-		shipmanager.shiptimer(room, allships);
-		//ship rendering
-		shipmanager.rendership(allships, renderer);
-		*/
 		
 		if (SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_RIGHT))
 		{
@@ -120,18 +112,7 @@ void SpaceGame::run()
 		}
 		
 		
-		if (FillLevelWithCells)
-		{
-			for (int x = 0; x < level.grid.size(); x++)
-			{
-				for (int y = 0; y < level.grid[x].size(); y++)
-				{
-					level.grid[x][y]->isRoom = true;
-					
-					FillLevelWithCells = false;
-				}
-			}
-		}
+
 
 		
 		//////////////////////////////////
@@ -146,25 +127,15 @@ void SpaceGame::run()
 				cellrenderer.RenderCells(level, renderer, x, y);
 
 				agentManager.agentBehaviour.UpdateLevelInfo(level, x, y);
-				
 
-				//designroom.designRoom(level, x, y);
-				
-
-				// Object Updates
-				//Spawns fire randomly in rooms over time
-				//fire.spawn(room, x, y);
-				//fire.fireSpread(room, x, y);
-
-				// Runs Oxygen spread function
-				//oxygen.update(level, x, y);
-
-				
-				//hydroponics.update(level, allHydroponicsFarms, x, y);
+				if (FillLevelWithCells)
+				{
+					level.grid[x][y]->isRoom = true;
+				}
 
 			} //End for Y loop
 		}//End for X loop
-
+		FillLevelWithCells = false;
 		 // Render the vector of hydroponics
 		hydroponics.renderItems(renderer, level, allHydroponicsFarms);
 

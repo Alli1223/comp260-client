@@ -9,8 +9,8 @@ SpaceGame::SpaceGame() : backgroundTexture("Resources\\background5.jpg")
 		throw InitialisationError("SDL_Init failed");
 	}
 	gameSettings.getScreenResolution();
-	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT;
-	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
+	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT / 2;
+	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH / 2;
 	window = SDL_CreateWindow("SpaceGame", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
 	
 	if (window == nullptr)
@@ -54,7 +54,7 @@ void SpaceGame::run()
 		// Networking
 		
 		if(SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_MIDDLE))
-			networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
+			networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD ");
 		networkClient.RecieveMessage();
 		networkClient.NetworkUpdate();
 
@@ -76,7 +76,7 @@ void SpaceGame::run()
 			if (state[SDL_SCANCODE_ESCAPE] && menu == false)
 			{
 				menu = true;
-				running = false;
+				
 
 			}
 			else if (state[SDL_SCANCODE_ESCAPE] && menu == true)
@@ -131,6 +131,7 @@ void SpaceGame::run()
 				if (FillLevelWithCells)
 				{
 					level.grid[x][y]->isRoom = true;
+
 				}
 
 			} //End for Y loop

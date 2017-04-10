@@ -11,6 +11,9 @@ public:
 	NetworkClient();
 	~NetworkClient();
 
+	boost::asio::io_service ios;
+	
+
 	void NetworkClient::NetworkUpdate();
 	int port = 8080;
 	void NetworkClient::sendTCPMessage(std::string host, int port, std::string message);

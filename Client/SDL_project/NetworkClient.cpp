@@ -16,19 +16,19 @@ void server_thread() {
 	try
 	{
 		boost::asio::io_service io_service;
-		boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080));
+		boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 2222));
 
 		{
 			boost::asio::ip::tcp::socket socket(io_service);
 			acceptor.accept(socket);
 
-			boost::asio::streambuf sb;
-			boost::system::error_code ec;
-			while (boost::asio::read(socket, sb, ec)) {
-				std::cout << "received: '" << &sb << "'\n";
+			boost::asio::streambuf streamBuffer;
+			boost::system::error_code errorCode;
+			while (boost::asio::read(socket, streamBuffer, errorCode)) {
+				std::cout << "received: '" << &streamBuffer << "'\n";
 
-				if (ec) {
-					std::cout << "status: " << ec.message() << "\n";
+				if (errorCode) {
+					std::cout << "status: " << errorCode.message() << "\n";
 					break;
 				}
 			}
@@ -44,17 +44,16 @@ void server_thread() {
 // Update every frame
 void NetworkClient::NetworkUpdate()
 {
+
 	// Create a new TCP listener thread
 	//std::thread ServerThread(server_thread);
 	//ServerThread.get_id();
-	std::string test = "test";
+	
 	//server_thread();
 }
 
 void NetworkClient::sendTCPMessage(std::string host, int port, std::string message)
 {
-	boost::asio::io_service ios;
-
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
 
 	boost::asio::ip::tcp::socket socket(ios);
@@ -63,9 +62,14 @@ void NetworkClient::sendTCPMessage(std::string host, int port, std::string messa
 
 	boost::array<char, 128> buf;
 	for (int i = 0; i < message.size(); i++)
+	{
 		buf[i] = message[i];
+	}
+	
 	boost::system::error_code error;
 	socket.write_some(boost::asio::buffer(buf, message.size()), error);
+	socket.send(boost::asio::buffer(buf, message.size()));
+	std::cout << "Message: " << message << " sent." << std::endl;
 	socket.close();
 }
 
@@ -97,6 +101,6 @@ void NetworkClient::RecieveMessage()
 	}
 	catch (std::exception& e)
 	{
-		std::cerr << e.what() << std::endl;
+		//std::cerr << e.what() << std::endl;
 	}
 }

@@ -8,9 +8,6 @@ class NetworkClient
 public:
 	NetworkClient();
 	~NetworkClient();
-	
-
-	
 
 	struct Client
 	{

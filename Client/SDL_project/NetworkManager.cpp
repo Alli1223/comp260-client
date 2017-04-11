@@ -56,7 +56,6 @@ void NetworkManager::NetworkUpdate()
 void NetworkManager::connectToServer()
 {
 
-
 }
 
 

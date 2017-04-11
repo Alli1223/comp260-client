@@ -1,4 +1,7 @@
 #pragma once
+#include "stdafx.h"
+#include "NetworkClient.h"
+
 class NetworkManager
 {
 public:

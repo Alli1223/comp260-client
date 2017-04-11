@@ -177,6 +177,7 @@
     <ClInclude Include="AgentInteraction.h" />
     <ClInclude Include="Fire.h" />
     <ClInclude Include="NetworkClient.h" />
+    <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="PathFinder.h" />
     <ClInclude Include="PlayerStats.h" />
     <ClInclude Include="Point.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="AgentInteraction.cpp" />
     <ClCompile Include="Fire.cpp" />
     <ClCompile Include="NetworkClient.cpp" />
+    <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="PathFinder.cpp" />
     <ClCompile Include="PlayerStats.cpp" />
     <ClCompile Include="Point.cpp" />

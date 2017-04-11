@@ -11,7 +11,12 @@ public:
 	NetworkClient();
 	~NetworkClient();
 
+	boost::asio::io_service ios;
+
+
 	void NetworkClient::NetworkUpdate();
+	void NetworkClient::server_thread();
+	int port = 8080;
 	void NetworkClient::sendTCPMessage(std::string host, int port, std::string message);
 
 	void NetworkClient::RecieveMessage();
@@ -34,6 +39,5 @@ public:
 		}
 	};
 
-	
 };
 

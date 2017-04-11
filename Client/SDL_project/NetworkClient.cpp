@@ -3,7 +3,7 @@
 
 //http://thisthread.blogspot.co.uk/search/label/ASIO
 
-NetworkClient::NetworkClient(boost::asio::io_service ios)
+NetworkClient::NetworkClient()
 {
 }
 
@@ -12,14 +12,14 @@ NetworkClient::~NetworkClient()
 {
 }
 
-void server_thread() {
+void NetworkClient::server_thread() {
 	try
 	{
-		boost::asio::io_service io_service;
-		boost::asio::ip::tcp::acceptor acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 2222));
+		
+		boost::asio::ip::tcp::acceptor acceptor(ios, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 2223));
 
 		{
-			boost::asio::ip::tcp::socket socket(io_service);
+			boost::asio::ip::tcp::socket socket(ios);
 			acceptor.accept(socket);
 
 			boost::asio::streambuf streamBuffer;
@@ -31,6 +31,7 @@ void server_thread() {
 					std::cout << "status: " << errorCode.message() << "\n";
 					break;
 				}
+				break;
 			}
 		}
 	}
@@ -47,10 +48,14 @@ void NetworkClient::NetworkUpdate()
 
 	// Create a new TCP listener thread
 	//std::thread ServerThread(server_thread);
-	//ServerThread.get_id();
 	
-	//server_thread();
+	//ServerThread.join();
+
+	RecieveMessage();
+
 }
+
+
 
 void NetworkClient::sendTCPMessage(std::string host, int port, std::string message)
 {
@@ -78,26 +83,26 @@ void NetworkClient::sendTCPMessage(std::string host, int port, std::string messa
 void NetworkClient::RecieveMessage()
 {
 	
-	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
+	
 	boost::array<char, 128> data;
 	try
 	{
 		for (;;)
 		{
-			std::array<char, 128> buf;
+			boost::array<char, 128> buf;
 			boost::system::error_code error;
+
 			size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
 			if (error == boost::asio::error::eof)
-				break; // Connection closed cleanly by peer
+				break; // Connection closed cleanly by peer.
 			else if (error)
-				throw boost::system::system_error(error);
+				throw boost::system::system_error(error); // Some other error.
 
 			std::cout.write(buf.data(), len);
-			std::cout << '|';
 		}
-		std::cout << std::endl;
+
 	}
 	catch (std::exception& e)
 	{

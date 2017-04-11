@@ -51,9 +51,12 @@ void SpaceGame::run()
 	player.characterType = "NPC";
 	player.agentWonderWhenIdle = false;
 	player.agentCanRotate = false;
-	
 
-	//networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
+	// socket
+	boost::asio::io_service ios;
+	boost::asio::ip::tcp::socket socket(ios);
+
+
 
 	// Main loop
 	while (running)
@@ -68,7 +71,7 @@ void SpaceGame::run()
 		}
 
 		
-		networkClient.RecieveMessage();
+		//networkClient.RecieveMessage();
 		networkClient.NetworkUpdate();
 
 

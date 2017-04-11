@@ -44,6 +44,13 @@ void SpaceGame::run()
 	unsigned int timer = 0;
 	int cellSize = level.getCellSize();
 
+	agentManager.renderStats = false;
+
+	Agent player;
+	player.setPosition(50, 50);
+	player.characterType = "NPC";
+	player.agentWonderWhenIdle = false;
+	player.agentCanRotate = false;
 	
 
 	//networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD");
@@ -53,8 +60,14 @@ void SpaceGame::run()
 	{
 		// Networking
 		
-		if(SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_MIDDLE))
-			networkClient.sendTCPMessage("127.0.0.1", 2222, "HELLO WORLD ");
+		if (spawnPlayer)
+		{
+			//networkClient.sendTCPMessage("127.0.0.1", 2222, "Test");
+			agentManager.SpawnAgent(player);
+			spawnPlayer = false;
+		}
+
+		
 		networkClient.RecieveMessage();
 		networkClient.NetworkUpdate();
 
@@ -76,13 +89,36 @@ void SpaceGame::run()
 			if (state[SDL_SCANCODE_ESCAPE] && menu == false)
 			{
 				menu = true;
-				
-
 			}
 			else if (state[SDL_SCANCODE_ESCAPE] && menu == true)
 			{
 				menu = false;
 			}
+
+			// Player Movement
+			else if (state[SDL_SCANCODE_S])
+			{
+				
+				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
+				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Down");
+			}
+			else if (state[SDL_SCANCODE_A])
+			{
+				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
+				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Left");
+			}
+			else if (state[SDL_SCANCODE_D])
+			{
+				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
+				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Right");
+			}
+			else if (state[SDL_SCANCODE_W])
+			{
+				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
+				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Up");
+			}
+			
+
 			else if (state[SDL_SCANCODE_0])
 			{
 				agentManager.EraseAllAgents(agentManager.allAgents);
@@ -107,8 +143,8 @@ void SpaceGame::run()
 		if (SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_RIGHT))
 		{
 
-			if (level.grid[mouse_X / cellSize][mouse_Y / cellSize]->isRoom)
-				agentManager.SpawnAgent("NPC", agentManager.allAgents, mouse_X, mouse_Y);
+			//if (level.grid[mouse_X / cellSize][mouse_Y / cellSize]->isRoom)
+				//agentManager.SpawnAgent("NPC", agentManager.allAgents, mouse_X, mouse_Y);
 		}
 		
 		

@@ -31,6 +31,7 @@ public:
 
 	//! Spawn character function (Character types are (NPC, Player)
 	void AgentManager::SpawnAgent(std::string CharacterTypeVar, std::vector<Agent>& allAgents, int x, int y);
+	void AgentManager::SpawnAgent(Agent& agent);
 
 	//! Erases all the agents path.
 	void AgentManager::EraseAllAgentPaths(std::vector<Agent>& allAgents);

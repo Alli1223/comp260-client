@@ -22,6 +22,12 @@ void AgentManager::SpawnAgent(std::string CharacterTypeVar, std::vector<Agent>& 
 		newAgent.characterType = CharacterTypeVar;
 		allAgents.push_back(newAgent);
 }
+void AgentManager::SpawnAgent(Agent& agent)
+{
+	//only spawn one
+	if(allAgents.size() < 1)
+		allAgents.push_back(agent);
+}
 
 void AgentManager::EraseAllAgentPaths(std::vector<Agent>& allAgents) 
 {
@@ -112,8 +118,8 @@ void AgentManager::RenderAgents(Agent& agent, SDL_Renderer* renderer, Level& lev
 				hungerBarTexture.render(renderer, x + agent.getSize() + agent.getSize() / 10, y, agent.getSize() / 10, agent.getToietNeed() * 100);
 		}
 	}
-	if (agent.characterType == "Player" && agent.isAlive)
+	if (agent.characterType == "Player")
 	{
-		characterDown.render(renderer, x, y, agent.getSize(), agent.getSize());
+		characterDown.renderRotation(renderer, x, y, agent.getSize(), agent.getSize(), agent.agentRotation);
 	}
 }

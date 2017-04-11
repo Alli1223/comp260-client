@@ -78,7 +78,8 @@ public:
 	int mouse_X, mouse_Y;
 
 	bool FillLevelWithCells = true;
-
+	bool spawnPlayer = true;
+	int clientID = rand() % 1000;
 private:
 
 	//! start point and end point for pathfinding

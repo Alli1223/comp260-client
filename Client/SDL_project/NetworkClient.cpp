@@ -3,7 +3,7 @@
 
 //http://thisthread.blogspot.co.uk/search/label/ASIO
 
-NetworkClient::NetworkClient()
+NetworkClient::NetworkClient(boost::asio::io_service ios)
 {
 }
 

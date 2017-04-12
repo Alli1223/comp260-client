@@ -34,7 +34,48 @@ SpaceGame::~SpaceGame()
 }
 
 
+void sendTCPMessage(std::string host, int port, std::string message, boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
+{
 
+	boost::array<char, 128> buf;
+	for (int i = 0; i < message.size(); i++)
+	{
+		buf[i] = message[i];
+	}
+
+	boost::system::error_code error;
+	socket.write_some(boost::asio::buffer(buf, message.size()), error);
+	socket.send(boost::asio::buffer(buf, message.size()));
+	std::cout << "Message: " << message << " sent." << std::endl;
+	//socket.close();
+}
+
+void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
+{
+	boost::array<char, 128> data;
+	try
+	{
+		for (;;)
+		{
+			boost::array<char, 128> buf;
+			boost::system::error_code error;
+
+			size_t len = socket.read_some(boost::asio::buffer(buf), error);
+
+			if (error == boost::asio::error::eof)
+				break; // Connection closed cleanly by peer.
+			else if (error)
+				throw boost::system::system_error(error); // Some other error.
+
+			std::cout.write(buf.data(), len);
+		}
+
+	}
+	catch (std::exception& e)
+	{
+		//std::cerr << e.what() << std::endl;
+	}
+}
 void SpaceGame::run()
 {
 	// Creates a grid of cells
@@ -55,7 +96,9 @@ void SpaceGame::run()
 	// socket
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
-
+	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 2222);
+	socket.connect(endpoint);
+	//sendTCPMessage("127.0.0.1", 2222, "TEST", ios, socket);
 
 
 	// Main loop
@@ -72,7 +115,9 @@ void SpaceGame::run()
 
 		
 		//networkClient.RecieveMessage();
-		networkClient.NetworkUpdate();
+		//networkManager.NetworkUpdate();
+
+		//std::thread networkUpdate(networkManager.NetworkUpdate);
 
 
 		// Handle events
@@ -103,22 +148,22 @@ void SpaceGame::run()
 			{
 				
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
-				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Down");
+				sendTCPMessage("127.0.0.1", 2222, "Move Down", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_A])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
-				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Left");
+				sendTCPMessage("127.0.0.1", 2222, "Move Left", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
-				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Right");
+				sendTCPMessage("127.0.0.1", 2222, "Move Right", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_W])
 			{
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
-				networkClient.sendTCPMessage("127.0.0.1", 2222, "Move Up");
+				sendTCPMessage("127.0.0.1", 2222, "Move Up", ios, socket);
 			}
 			
 
@@ -200,7 +245,9 @@ void SpaceGame::run()
 			}
 		}
 		
-		
+		// Synchronse the network update thread
+		//networkUpdate.join();
+
 
 		///////////////////////////////////////
 		//MENU
@@ -222,6 +269,9 @@ void SpaceGame::run()
 		}
 		SDL_RenderPresent(renderer);
 	}
+	//close socket when game ends
+	socket.close();
+	
 }// End while running
 
 

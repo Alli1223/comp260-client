@@ -22,6 +22,7 @@
 #include "PlayerStats.h"
 #include "CellRendering.h"
 #include "Agent.h"
+#include "NetworkManager.h"
 #include "NetworkClient.h"
 
 //! The main class
@@ -59,7 +60,8 @@ public:
 	PlayerStats playerstats;
 	CellRendering cellrenderer;
 	Hydroponics hydroponics;
-	NetworkClient networkClient;
+	NetworkManager networkManager;
+
 
 	//! Conains the list of nodes that makes the path
 	//std::vector<Point> path;

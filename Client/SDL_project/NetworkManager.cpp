@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "NetworkManager.h"
 
-
 NetworkManager::NetworkManager()
 {
+	boost::asio::io_service ios;
+	boost::asio::ip::tcp::socket clientSocket(ios);
 }
-
 
 NetworkManager::~NetworkManager()
 {
@@ -53,9 +53,9 @@ void NetworkManager::NetworkUpdate()
 
 }
 
-void NetworkManager::connectToServer()
+void NetworkManager::connectToServer(std::string host, int port)
 {
-
+	
 }
 
 
@@ -64,7 +64,6 @@ void NetworkManager::sendTCPMessage(std::string host, int port, std::string mess
 {
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
 	boost::asio::ip::tcp::socket socket(ios);
-
 
 	socket.connect(endpoint);
 
@@ -78,7 +77,7 @@ void NetworkManager::sendTCPMessage(std::string host, int port, std::string mess
 	socket.write_some(boost::asio::buffer(buf, message.size()), error);
 	socket.send(boost::asio::buffer(buf, message.size()));
 	std::cout << "Message: " << message << " sent." << std::endl;
-	socket.close();
+	//socket.close();
 }
 
 

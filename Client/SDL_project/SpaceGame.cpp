@@ -55,25 +55,23 @@ void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& 
 	boost::array<char, 128> data;
 	try
 	{
-		for (;;)
-		{
-			boost::array<char, 128> buf;
-			boost::system::error_code error;
+		boost::array<char, 128> buf;
+		boost::system::error_code error;
 
-			size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
-			if (error == boost::asio::error::eof)
-				break; // Connection closed cleanly by peer.
-			else if (error)
-				throw boost::system::system_error(error); // Some other error.
+		size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
-			std::cout.write(buf.data(), len);
-		}
+		if (error == boost::asio::error::eof)
+			return; // Connection closed cleanly by peer.
+		else if (error)
+			throw boost::system::system_error(error); // Some other error.
 
+		std::cout.write(buf.data(), len);
+		return;
 	}
 	catch (std::exception& e)
 	{
-		//std::cerr << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 	}
 }
 void SpaceGame::run()
@@ -98,7 +96,13 @@ void SpaceGame::run()
 	boost::asio::ip::tcp::socket socket(ios);
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 2222);
 	socket.connect(endpoint);
-	//sendTCPMessage("127.0.0.1", 2222, "TEST", ios, socket);
+
+	// Send initial message
+	sendTCPMessage("127.0.0.1", 2222, "Connecting", ios, socket);
+
+	//Close socket and reopen
+	socket.close();
+	socket.connect(endpoint);
 
 
 	// Main loop
@@ -114,9 +118,18 @@ void SpaceGame::run()
 		}
 
 		
-		//networkClient.RecieveMessage();
+		//std::thread networkUpdateThread(RecieveMessage, ios, socket);
+
+		RecieveMessage(ios, socket);
+
+
+		
 		//networkManager.NetworkUpdate();
 
+
+		// Synchronse the network update thread
+		//if(networkUpdateThread.joinable())
+			//networkUpdateThread.join();
 		//std::thread networkUpdate(networkManager.NetworkUpdate);
 
 
@@ -245,8 +258,7 @@ void SpaceGame::run()
 			}
 		}
 		
-		// Synchronse the network update thread
-		//networkUpdate.join();
+		
 
 
 		///////////////////////////////////////

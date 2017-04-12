@@ -58,7 +58,6 @@ void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& 
 		boost::array<char, 128> buf;
 		boost::system::error_code error;
 
-
 		size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
 		if (error == boost::asio::error::eof)
@@ -161,22 +160,22 @@ void SpaceGame::run()
 			{
 				
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "Move Down", ios, socket);
+				sendTCPMessage("127.0.0.1", 2222, "MOVE SOUTH", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_A])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "Move Left", ios, socket);
+				sendTCPMessage("127.0.0.1", 2222, "MOVE WEST", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "Move Right", ios, socket);
+				sendTCPMessage("127.0.0.1", 2222, "MOVE EAST", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_W])
 			{
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "Move Up", ios, socket);
+				sendTCPMessage("127.0.0.1", 2222, "MOVE NORTH", ios, socket);
 			}
 			
 

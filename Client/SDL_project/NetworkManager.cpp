@@ -22,7 +22,8 @@ void NetworkManager::server_thread() {
 
 			boost::asio::streambuf streamBuffer;
 			boost::system::error_code errorCode;
-			while (boost::asio::read(socket, streamBuffer, errorCode)) {
+			while (boost::asio::read(socket, streamBuffer, errorCode)) 
+			{
 				std::cout << "received: '" << &streamBuffer << "'\n";
 
 				if (errorCode) {

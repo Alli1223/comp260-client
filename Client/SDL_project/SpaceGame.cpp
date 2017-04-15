@@ -42,12 +42,10 @@ void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& 
 {
 	try
 	{
-
 		boost::array<char, 128> buf;
 		boost::system::error_code error;
 
 		size_t len = socket.read_some(boost::asio::buffer(buf), error);
-		//std::cout << socket.receive(boost::asio::buffer(buf));
 		if (error == boost::asio::error::eof)
 			return; // Connection closed cleanly by peer.
 		else if (error)
@@ -65,28 +63,28 @@ void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& 
 }
 void sendTCPMessage(std::string host, int port, std::string message, boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
 {
-
+	
 	boost::array<char, 128> buf;
 	for (int i = 0; i < message.size(); i++)
 	{
 		buf[i] = message[i];
 	}
-
-	boost::system::error_code error;
-	socket.write_some(boost::asio::buffer(buf, message.size()), error);
-	std::cout << "Message sent: " << message << std::endl;
-
+	try
+	{
+		boost::system::error_code error;
+		socket.write_some(boost::asio::buffer(buf, message.size()), error);
+		std::cout << "Message sent: " << message << std::endl;
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
 	RecieveMessage(ios, socket);
 
 }
 void networkUpdate()
 {
-	boost::asio::io_service ios;
-	boost::asio::ip::tcp::socket socket(ios);
-	while (true)
-	{
-		RecieveMessage(ios, socket);
-	}
+
 }
 void SpaceGame::run()
 {
@@ -178,7 +176,7 @@ void SpaceGame::run()
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
 			{
-				
+				socket.connect(endpoint);
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE SOUTH\n", ios, socket);
 			}
@@ -189,6 +187,7 @@ void SpaceGame::run()
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
+				
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE EAST\n", ios, socket);
 			}
@@ -196,11 +195,6 @@ void SpaceGame::run()
 			{
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE NORTH\n", ios, socket);
-			}
-			else if (state[SDL_SCANCODE_F])
-			{
-				socket.close();
-				socket.connect(endpoint);
 			}
 			
 
@@ -304,7 +298,7 @@ void SpaceGame::run()
 		SDL_RenderPresent(renderer);
 	}
 	//close socket when game ends
-	socket.close();
+	//socket.close();
 	
 }// End while running
 

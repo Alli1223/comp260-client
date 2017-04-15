@@ -34,6 +34,35 @@ SpaceGame::~SpaceGame()
 }
 
 
+
+
+
+
+void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
+{
+	try
+	{
+
+		boost::array<char, 128> buf;
+		boost::system::error_code error;
+
+		size_t len = socket.read_some(boost::asio::buffer(buf), error);
+		//std::cout << socket.receive(boost::asio::buffer(buf));
+		if (error == boost::asio::error::eof)
+			return; // Connection closed cleanly by peer.
+		else if (error)
+			throw boost::system::system_error(error); // Some other error.
+
+		std::cout.write(buf.data(), len);
+		return;
+
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+	
+}
 void sendTCPMessage(std::string host, int port, std::string message, boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
 {
 
@@ -45,32 +74,18 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 
 	boost::system::error_code error;
 	socket.write_some(boost::asio::buffer(buf, message.size()), error);
-	socket.send(boost::asio::buffer(buf, message.size()));
-	std::cout << "Message: " << message << " sent." << std::endl;
-	//socket.close();
+	std::cout << "Message sent: " << message << std::endl;
+
+	RecieveMessage(ios, socket);
+
 }
-
-void RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
+void networkUpdate()
 {
-	boost::array<char, 128> data;
-	try
+	boost::asio::io_service ios;
+	boost::asio::ip::tcp::socket socket(ios);
+	while (true)
 	{
-		boost::array<char, 128> buf;
-		boost::system::error_code error;
-
-		size_t len = socket.read_some(boost::asio::buffer(buf), error);
-
-		if (error == boost::asio::error::eof)
-			return; // Connection closed cleanly by peer.
-		else if (error)
-			throw boost::system::system_error(error); // Some other error.
-
-		std::cout.write(buf.data(), len);
-		return;
-	}
-	catch (std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
+		RecieveMessage(ios, socket);
 	}
 }
 void SpaceGame::run()
@@ -81,7 +96,6 @@ void SpaceGame::run()
 	running = true;
 	unsigned int timer = 0;
 	int cellSize = level.getCellSize();
-
 	agentManager.renderStats = false;
 
 	Agent player;
@@ -90,46 +104,52 @@ void SpaceGame::run()
 	player.agentWonderWhenIdle = false;
 	player.agentCanRotate = false;
 
-	// socket
+	// Server connection deets
+	int port = 2222;
+	std::string IPAddress = "127.0.0.1";
+
+	// Create socket and io service
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
-	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 2222);
+	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(IPAddress), port);
 	socket.connect(endpoint);
+	std::string playerName = "ANON\n";
 
-	// Send initial message
-	sendTCPMessage("127.0.0.1", 2222, "Connecting", ios, socket);
+	//Get player name
+	//std::cin >> playerName;
+	//std::cout << "NAME: " << playerName << std::endl;
 
-	//Close socket and reopen
-	socket.close();
-	socket.connect(endpoint);
+	// Send initial message with player name
+	sendTCPMessage(IPAddress, port, playerName, ios, socket);
+	RecieveMessage(ios, socket);
 
+	//std::thread networkUpdateThread(networkUpdate);
 
-	// Main loop
+	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
 		// Networking
 		
+		//Spawn Player Once
 		if (spawnPlayer)
 		{
-			//networkClient.sendTCPMessage("127.0.0.1", 2222, "Test");
 			agentManager.SpawnAgent(player);
 			spawnPlayer = false;
+			//RecieveMessage(ios, socket);
 		}
 
 		
-		//std::thread networkUpdateThread(RecieveMessage, ios, socket);
-
-		RecieveMessage(ios, socket);
-
-
 		
-		//networkManager.NetworkUpdate();
-
+		//RecieveMessage(ios, socket);
+		
+		
+		// Create a new network recieve thread and detach
+		//std::cout << networkUpdateThread.hardware_concurrency();
+		
 
 		// Synchronse the network update thread
-		//if(networkUpdateThread.joinable())
-			//networkUpdateThread.join();
-		//std::thread networkUpdate(networkManager.NetworkUpdate);
+		//networkUpdateThread.join();
+		
 
 
 		// Handle events
@@ -160,22 +180,27 @@ void SpaceGame::run()
 			{
 				
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "MOVE SOUTH", ios, socket);
+				sendTCPMessage(IPAddress, port, "MOVE SOUTH\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_A])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "MOVE WEST", ios, socket);
+				sendTCPMessage(IPAddress, port, "MOVE WEST\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
 				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "MOVE EAST", ios, socket);
+				sendTCPMessage(IPAddress, port, "MOVE EAST\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_W])
 			{
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
-				sendTCPMessage("127.0.0.1", 2222, "MOVE NORTH", ios, socket);
+				sendTCPMessage(IPAddress, port, "MOVE NORTH\n", ios, socket);
+			}
+			else if (state[SDL_SCANCODE_F])
+			{
+				socket.close();
+				socket.connect(endpoint);
 			}
 			
 
@@ -200,15 +225,6 @@ void SpaceGame::run()
 		// Renders the background image
 		backgroundTexture.render(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_WIDTH, WINDOW_HEIGHT);
 		
-		if (SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_RIGHT))
-		{
-
-			//if (level.grid[mouse_X / cellSize][mouse_Y / cellSize]->isRoom)
-				//agentManager.SpawnAgent("NPC", agentManager.allAgents, mouse_X, mouse_Y);
-		}
-		
-		
-
 
 		
 		//////////////////////////////////
@@ -258,7 +274,8 @@ void SpaceGame::run()
 		}
 		
 		
-
+		
+		
 
 		///////////////////////////////////////
 		//MENU
@@ -278,6 +295,12 @@ void SpaceGame::run()
 				SpaceGame::run();
 			}
 		}
+
+		// Sync threads
+		//if(networkUpdateThread.joinable())
+			//networkUpdateThread.join();
+
+
 		SDL_RenderPresent(renderer);
 	}
 	//close socket when game ends

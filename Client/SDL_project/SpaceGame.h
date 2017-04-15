@@ -61,6 +61,7 @@ public:
 	CellRendering cellrenderer;
 	Hydroponics hydroponics;
 	NetworkManager networkManager;
+	NetworkClient networkClient;
 
 
 	//! Conains the list of nodes that makes the path

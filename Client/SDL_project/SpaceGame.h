@@ -42,7 +42,7 @@ public:
 
 	//! Removes all the data from stored vectors
 	void SpaceGame::deleteVectors();
-
+	void SpaceGame::networkUpdate();
 	//! Initalising all classes needed for game
 	Level level;
 	GameSettings gameSettings;
@@ -82,7 +82,7 @@ public:
 
 	bool FillLevelWithCells = true;
 	bool spawnPlayer = true;
-	int clientID = rand() % 1000;
+	bool clientCanEnterName = false;
 private:
 
 	//! start point and end point for pathfinding

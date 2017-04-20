@@ -80,18 +80,19 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 	{
 		boost::system::error_code error;
 		socket.write_some(boost::asio::buffer(buf, message.size()), error);
-		std::cout << "Message sent: " << message << std::endl;
+		//std::cout << "Message sent: " << message << std::endl;
 	}
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	RecieveMessage(ios, socket);
+	//RecieveMessage(ios, socket);
 
 }
-void networkUpdate()
+void SpaceGame::networkUpdate()
 {
-
+	//BORKEN
+	//std::thread networkUpdateThread(&SpaceGame::networkUpdate, socket);
 }
 void SpaceGame::run()
 {
@@ -100,6 +101,7 @@ void SpaceGame::run()
 
 	running = true;
 	unsigned int timer = 0;
+	
 	int cellSize = level.getCellSize();
 	agentManager.renderStats = false;
 
@@ -113,31 +115,34 @@ void SpaceGame::run()
 	int port = 2222;
 	std::string IPAddress = "127.0.0.1";
 
-	// Create socket and io service
+	// Create socket and io service then connect to sever
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(IPAddress), port);
 	socket.connect(endpoint);
-	std::string playerName = "ANON\n";
+	
+	// Create a unique playername
+	std::string playerName = std::to_string(SDL_GetTicks());
 
+	
+	// Or Get player name (UNCOMMENT FOR FINAL)
+	if (clientCanEnterName)
+	{
+		std::cout << "ENTER YOUR NAME: " << std::endl;
+		std::cin >> playerName;
+		std::cout << "NAME: " << playerName << std::endl;
+	}
 
-
-	//Get player name
-	//std::cin >> playerName;
-	//std::cout << "NAME: " << playerName << std::endl;
+	// add endline suffix to name
+	playerName = playerName + "\n";
 
 	// Send initial message with player name
 	sendTCPMessage(IPAddress, port, playerName, ios, socket);
 	std::string name = RecieveMessage(ios, socket);
-	if (name != "NULL" && name != "QUIT")
-		playerName = name;
-	else
-	{
-		std::cout << "Invalid message from server" << std::endl;
-	}
+
 	std::cout << playerName << std::endl;
 
-	//std::thread networkUpdateThread(networkUpdate);
+	bool doOnce = true;
 
 	/////////// MAIN LOOP /////////////////
 	while (running)
@@ -149,15 +154,57 @@ void SpaceGame::run()
 		{
 			agentManager.SpawnAgent(player);
 			spawnPlayer = false;
+			
 		}
+		
 
+		bool runUpdate = false;
+
+		float timer = sin(SDL_GetTicks() / 1000);
+		// Do every 200 ms
+		if (timer >= 0.9999 || timer <= -0.9999)
+			runUpdate = true;
 		
+		if (runUpdate)
+		{
+			runUpdate = false;
+			sendTCPMessage(IPAddress, port, "PLAYER_LOCATIONS_REQUEST\n", ios, socket);
+			std::string updateMessage = RecieveMessage(ios, socket);
+			if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage.size() > 4)
+			{
+				std::vector<std::string> otherPlayers;
+				Agent newPlayer;
+				newPlayer.setPosition(50, 50);
+				newPlayer.characterType = "NPC";
+				newPlayer.agentWonderWhenIdle = false;
+				newPlayer.agentCanRotate = false;
+
+
+				// Go throught the other player locations
+				for (char& c : updateMessage)
+				{
+					// Get player name
+					if (&c == "<")
+					{
+						int i = 0;
+						while (&c != ">")
+						{
+							otherPlayers[i].push_back(c);
+							i++;
+						}
+					}
+					// Get player location (the intValue is
+					if (&c == "X")
+						newPlayer.setX(c + 1 * cellSize);
+					if (&c == "Y")
+						newPlayer.setY(c + 1 * cellSize);
+				}
+
+				// Spawn the new player
+				agentManager.SpawnAgent(newPlayer);
+			}
+		}
 		
-		//RecieveMessage(ios, socket);
-		
-		
-		// Create a new network recieve thread and detach
-		//std::cout << networkUpdateThread.hardware_concurrency();
 		
 
 		// Synchronse the network update thread
@@ -209,21 +256,8 @@ void SpaceGame::run()
 				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_NORTH\n", ios, socket);
 			}
-			
-
-			else if (state[SDL_SCANCODE_0])
-			{
-				agentManager.EraseAllAgents(agentManager.allAgents);
-			}
-			else if (state[SDL_SCANCODE_9])
-			{
-				agentManager.EraseAllAgentPaths(agentManager.allAgents);
-			}
 
 		}//End pollevent if
-
-		// Checks the keyboard for input
-		const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
 
 		// Rendering process:
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -244,8 +278,6 @@ void SpaceGame::run()
 			{
 				//Renders all he cells
 				cellrenderer.RenderCells(level, renderer, x, y);
-
-				agentManager.agentBehaviour.UpdateLevelInfo(level, x, y);
 
 				if (FillLevelWithCells)
 				{
@@ -297,9 +329,7 @@ void SpaceGame::run()
 			}
 			if (escapemenu.restart)
 			{
-				deleteVectors();
-				SpaceGame::~SpaceGame();
-				SpaceGame::run();
+				RecieveMessage(ios, socket);
 			}
 		}
 
@@ -309,11 +339,13 @@ void SpaceGame::run()
 
 
 		SDL_RenderPresent(renderer);
-	}
-	//close socket when game ends
-	//socket.close();
+	}// End while running
+
+	// Send quit message and close socket when game ends
+	sendTCPMessage(IPAddress, port, "QUIT\n", ios, socket);
+	socket.close();
 	
-}// End while running
+}
 
 
 void SpaceGame::deleteVectors()

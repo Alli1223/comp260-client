@@ -40,25 +40,33 @@ SpaceGame::~SpaceGame()
 
 std::string RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
 {
-	std::string returnMessage = "NULL";
+	//Create return messages and an instream to put the buffer data into
+	std::string returnMessage;
+	std::stringstream inStream;
 	try
 	{
 		boost::array<char, 128> buffer;
 		boost::system::error_code error;
 
+		// Read the data from the socket
 		size_t len = socket.read_some(boost::asio::buffer(buffer), error);
 		if (error == boost::asio::error::eof)
 			return "QUIT"; // Connection closed cleanly by peer.
 		else if (error)
 			throw boost::system::system_error(error); // Some other error.
 
-		std::cout.write(buffer.data(), len);
+		//Print receive message
+		//std::cout.write(buffer.data(), len);
 		
-		//for (int i = 0; i < buffer.size(); i++)
-			//returnMessage[i] = buffer[i];
+		// Feed the buffer data into the inStream
+		inStream << (buffer.data());
+		
+		// Convert inStream to string
+		returnMessage = inStream.str();
+		// Remove weird character that gets stuck the the end of messages
+		returnMessage.erase(std::remove(returnMessage.begin(), returnMessage.end(), 'Ì'), returnMessage.end());
 
-		returnMessage = (buffer.data(), len);
-
+		// Return String
 		return returnMessage;
 
 	}
@@ -70,12 +78,13 @@ std::string RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::s
 }
 void sendTCPMessage(std::string host, int port, std::string message, boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
 {
-	
+	// Fill the buffer with the data from the string
 	boost::array<char, 128> buf;
 	for (int i = 0; i < message.size(); i++)
 	{
 		buf[i] = message[i];
 	}
+	//Try sending the data
 	try
 	{
 		boost::system::error_code error;
@@ -91,6 +100,7 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 }
 void SpaceGame::networkUpdate()
 {
+
 	//BORKEN
 	//std::thread networkUpdateThread(&SpaceGame::networkUpdate, socket);
 }
@@ -105,6 +115,7 @@ void SpaceGame::run()
 	int cellSize = level.getCellSize();
 	agentManager.renderStats = false;
 
+	// Create the player
 	Agent player;
 	player.setPosition(50, 50);
 	player.characterType = "NPC";
@@ -125,7 +136,7 @@ void SpaceGame::run()
 	std::string playerName = std::to_string(SDL_GetTicks());
 
 	
-	// Or Get player name (UNCOMMENT FOR FINAL)
+	// Or Get player name
 	if (clientCanEnterName)
 	{
 		std::cout << "ENTER YOUR NAME: " << std::endl;
@@ -142,8 +153,6 @@ void SpaceGame::run()
 
 	std::cout << playerName << std::endl;
 
-	bool doOnce = true;
-
 	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
@@ -154,7 +163,6 @@ void SpaceGame::run()
 		{
 			agentManager.SpawnAgent(player);
 			spawnPlayer = false;
-			
 		}
 		
 
@@ -162,14 +170,15 @@ void SpaceGame::run()
 
 		float timer = sin(SDL_GetTicks() / 1000);
 		// Do every 200 ms
-		if (timer >= 0.9999 || timer <= -0.9999)
+		if (timer >= 0.99999 || timer <= -0.99999)
 			runUpdate = true;
 		
-		if (runUpdate)
+		if (true)
 		{
 			runUpdate = false;
 			sendTCPMessage(IPAddress, port, "PLAYER_LOCATIONS_REQUEST\n", ios, socket);
 			std::string updateMessage = RecieveMessage(ios, socket);
+			std::cout << "RECIEVE MESSAGE: " << updateMessage << std::endl;
 			if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage.size() > 4)
 			{
 				std::vector<std::string> otherPlayers;
@@ -221,14 +230,13 @@ void SpaceGame::run()
 			case SDL_QUIT:
 				running = false;
 				break;
-
-
 			default:
 				break;
 			}
 			if (state[SDL_SCANCODE_ESCAPE] && menu == false)
 			{
 				menu = true;
+				running = false;
 			}
 			else if (state[SDL_SCANCODE_ESCAPE] && menu == true)
 			{

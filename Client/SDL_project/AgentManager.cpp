@@ -25,8 +25,19 @@ void AgentManager::SpawnAgent(std::string CharacterTypeVar, std::vector<Agent>& 
 void AgentManager::SpawnAgent(Agent& agent)
 {
 	//only spawn one
-	if(allAgents.size() < 1)
-		allAgents.push_back(agent);
+	
+	allAgents.push_back(agent);
+}
+
+int AgentManager::GetAgentNumberFomID(std::string ID)
+{
+	for (int i = 0; i < allAgents.size(); i++)
+	{
+		if (ID == allAgents[i].getID())
+		{
+			return i;
+		}
+	}
 }
 
 void AgentManager::EraseAllAgentPaths(std::vector<Agent>& allAgents) 

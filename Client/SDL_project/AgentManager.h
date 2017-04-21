@@ -33,6 +33,9 @@ public:
 	void AgentManager::SpawnAgent(std::string CharacterTypeVar, std::vector<Agent>& allAgents, int x, int y);
 	void AgentManager::SpawnAgent(Agent& agent);
 
+	//! Retuns the agents number
+	int AgentManager::GetAgentNumberFomID(std::string ID);
+
 	//! Erases all the agents path.
 	void AgentManager::EraseAllAgentPaths(std::vector<Agent>& allAgents);
 

@@ -33,7 +33,17 @@ SpaceGame::~SpaceGame()
 	SDL_Quit();
 }
 
-
+bool DoesPlayerExist(std::vector<std::string>& playerNames, std::string playername)
+{
+	// Return true if theres a match
+	for (int i = 0; i < playerNames.size(); i++)
+	{
+		if (playername == playerNames[i])
+			return true;
+	}
+	// Return false if no player with that name exists
+	return false;
+}
 
 
 
@@ -89,7 +99,7 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 	{
 		boost::system::error_code error;
 		socket.write_some(boost::asio::buffer(buf, message.size()), error);
-		//std::cout << "Message sent: " << message << std::endl;
+//std::cout << "Message sent: " << message << std::endl;
 	}
 	catch (std::exception& e)
 	{
@@ -111,7 +121,7 @@ void SpaceGame::run()
 
 	running = true;
 	unsigned int timer = 0;
-	
+
 	int cellSize = level.getCellSize();
 	agentManager.renderStats = false;
 
@@ -131,11 +141,11 @@ void SpaceGame::run()
 	boost::asio::ip::tcp::socket socket(ios);
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(IPAddress), port);
 	socket.connect(endpoint);
-	
+
 	// Create a unique playername
 	std::string playerName = std::to_string(SDL_GetTicks());
 
-	
+
 	// Or Get player name
 	if (clientCanEnterName)
 	{
@@ -151,20 +161,20 @@ void SpaceGame::run()
 	sendTCPMessage(IPAddress, port, playerName, ios, socket);
 	std::string name = RecieveMessage(ios, socket);
 
-	std::cout << playerName << std::endl;
+	std::cout << "PlayerName: " << playerName << std::endl;
 
 	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
 		// Networking
-		
+
 		//Spawn Player Once
 		if (spawnPlayer)
 		{
 			agentManager.SpawnAgent(player);
 			spawnPlayer = false;
 		}
-		
+
 
 		bool runUpdate = false;
 
@@ -172,45 +182,54 @@ void SpaceGame::run()
 		// Do every 200 ms
 		if (timer >= 0.99999 || timer <= -0.99999)
 			runUpdate = true;
-		
+
 		if (true)
 		{
 			runUpdate = false;
 			sendTCPMessage(IPAddress, port, "PLAYER_LOCATIONS_REQUEST\n", ios, socket);
 			std::string updateMessage = RecieveMessage(ios, socket);
-			std::cout << "RECIEVE MESSAGE: " << updateMessage << std::endl;
-			if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage.size() > 4)
+			if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage[0] == *"<")
 			{
-				std::vector<std::string> otherPlayers;
-				Agent newPlayer;
-				newPlayer.setPosition(50, 50);
-				newPlayer.characterType = "NPC";
-				newPlayer.agentWonderWhenIdle = false;
-				newPlayer.agentCanRotate = false;
-
-
-				// Go throught the other player locations
-				for (char& c : updateMessage)
+				std::cout << "RECIEVE MESSAGE: " << updateMessage << std::endl;
+				
+				std::string otherPlayerName = "                                                          ";
+				
+				// PlayerName
+				for (int i = 1; i < updateMessage.size(); i++)
 				{
-					// Get player name
-					if (&c == "<")
-					{
-						int i = 0;
-						while (&c != ">")
-						{
-							otherPlayers[i].push_back(c);
-							i++;
-						}
-					}
-					// Get player location (the intValue is
-					if (&c == "X")
-						newPlayer.setX(c + 1 * cellSize);
-					if (&c == "Y")
-						newPlayer.setY(c + 1 * cellSize);
+					if (updateMessage[i] != *">")
+						otherPlayerName[i] = updateMessage[i];
+					else
+						break;
+					
 				}
+				// Remove any spaces
+				otherPlayerName.erase(std::remove(otherPlayerName.begin(), otherPlayerName.end(), ' '), otherPlayerName.end());
 
-				// Spawn the new player
-				agentManager.SpawnAgent(newPlayer);
+				// If the player already exists
+				if (DoesPlayerExist(otherPlayerNames, otherPlayerName))
+				{
+					// Update Player Positions
+					for (int i = 0; i < updateMessage.size(); i++)
+					{
+						if (updateMessage[i] == *"X" && updateMessage[i + 1] == *":")
+							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(updateMessage[i + 2]);
+						if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
+							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(updateMessage[i + 2]);
+					}
+				}
+				//Spawn new player
+				else
+				{
+					otherPlayerNames.push_back(otherPlayerName);
+					Agent newPlayer;
+					newPlayer.setPosition(50, 50);
+					newPlayer.characterType = "NPC";
+					newPlayer.agentWonderWhenIdle = false;
+					newPlayer.agentCanRotate = false;
+					newPlayer.setID(otherPlayerName);
+					agentManager.SpawnAgent(newPlayer);
+				}
 			}
 		}
 		

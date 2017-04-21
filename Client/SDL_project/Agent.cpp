@@ -68,11 +68,12 @@ void Agent::Update(Level& level)
 	if (this->getHealth() <= 0)
 		this->isAlive = false;
 
-	// if agent reaches bed || toilet then reset values
+	/* if agent reaches bed || toilet then reset values
 	if (level.grid[cellX][cellY]->isToilet)
 		this->setToiletNeed(0.0);
 	if (level.grid[cellX][cellY]->isBed)
 		this->setTiredness(0.0);
+		*/
 
 	// Agent will wonder randomly when idle
 	if (movementStatus == Idle && agentWonderWhenIdle)

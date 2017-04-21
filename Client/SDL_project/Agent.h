@@ -50,6 +50,10 @@ public:
 
 	//! Character Type
 	std::string characterType = "NPC";
+	
+	//! Agent ID
+	std::string getID() { return ID; }
+	std::string setID(std::string newID) { return ID = newID; }
 
 	//!* CHARACTER PATHFINDING */
 	//! Create an instance of pathfinder
@@ -99,7 +103,7 @@ public:
 	int agentRotation = 0;
 
 private:
-	
+	std::string ID = "";
 	//! Integers for the agent's X and Y position
 	int x = 0; int y = 0;
 	//! Integers for the agent's cellX and cellY positions below agent

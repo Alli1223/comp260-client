@@ -73,6 +73,9 @@ public:
 	//! Contains a list of all the ship
 	std::vector<Ship> allShips;
 
+	//! Vector of all other players names in the game
+
+	std::vector<std::string> otherPlayerNames;
 	//! The window width 
 	int WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
 	//! The window height

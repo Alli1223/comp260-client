@@ -94,6 +94,9 @@ public:
 	int port = 2222;
 	std::string IPAddresss = "46.101.9.185";
 	std::string IPAddress = "127.0.0.1";
+
+	//! Network update tick
+	float timer;
 private:
 
 	//! start point and end point for pathfinding

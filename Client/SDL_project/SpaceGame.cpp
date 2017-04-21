@@ -45,7 +45,10 @@ bool DoesPlayerExist(std::vector<std::string>& playerNames, std::string playerna
 	return false;
 }
 
-
+bool timer(int start, int currentTime, int intervalMS, bool& timer)
+{
+	return false;
+}
 
 
 std::string RecieveMessage(boost::asio::io_service& ios, boost::asio::ip::tcp::socket& socket)
@@ -106,8 +109,9 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 		std::cerr << e.what() << std::endl;
 	}
 	//RecieveMessage(ios, socket);
-
 }
+
+
 void SpaceGame::networkUpdate()
 {
 	//BORKEN
@@ -153,31 +157,45 @@ void SpaceGame::run()
 
 	std::cout << "PlayerName: " << playerName << std::endl;
 
+
+	bool MessageSent = false;
+	double lastTime = SDL_GetTicks();
+	double timebehind = 0;
+	bool run = false;
+	//bool AlwaysUpdate = tru;
 	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
-		
 
-		// Networking
+		timebehind += SDL_GetTicks() - lastTime;
+		lastTime = SDL_GetTicks();
 
-		bool runUpdate = false;
 
-		float timer = sin(SDL_GetTicks() / 1000);
-		// Do every 200 ms
-		if (timer > 0)
-			runUpdate = true;
 
-		if (true)
+
+		while (timebehind >= 50)
 		{
-			runUpdate = false;
+			// Update the game.
+			run = true;
+			// Every time we update, we subtract a timestep from the amount we are behind.
+			timebehind -= 50;
+		}
+
+
+
+
+		// Only run when the player moves
+		if (run)
+		{
+			run = false;
 			sendTCPMessage(IPAddress, port, "PLAYER_LOCATIONS_REQUEST\n", ios, socket);
 			std::string updateMessage = RecieveMessage(ios, socket);
 			if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage[0] == *"<")
 			{
 				std::cout << "RECIEVE MESSAGE: " << updateMessage << std::endl;
-				
+
 				std::string otherPlayerName = "                                                          ";
-				
+
 				// PlayerName
 				for (int i = 1; i < updateMessage.size(); i++)
 				{
@@ -189,7 +207,7 @@ void SpaceGame::run()
 				// Remove any spaces from name
 				otherPlayerName.erase(std::remove(otherPlayerName.begin(), otherPlayerName.end(), ' '), otherPlayerName.end());
 
-				
+
 				// If the player already exists
 				if (DoesPlayerExist(otherPlayerNames, otherPlayerName))
 				{
@@ -205,8 +223,9 @@ void SpaceGame::run()
 							// Remove white space
 							updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
 							int pos = std::stoi(updatenumber, &sz);
-							pos *= 50;
-							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
+							pos *= level.getCellSize();
+							if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() != pos)
+								agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
 						}
 						else if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
 						{
@@ -217,8 +236,9 @@ void SpaceGame::run()
 							// Remove white space
 							updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
 							int pos = std::stoi(updatenumber, &sz);
-							pos *= 50;
-							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
+							pos *= level.getCellSize();
+							if(agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() != pos)
+								agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
 						}
 
 
@@ -231,7 +251,7 @@ void SpaceGame::run()
 								if (updateMessage[i + 4 + j] == *".")
 									break;
 								otherPlayerAction[j] = updateMessage[i + 4 + j];
-								
+
 							}
 							//Remove Spaces
 							otherPlayerAction.erase(std::remove(otherPlayerAction.begin(), otherPlayerAction.end(), ' '), otherPlayerAction.end());
@@ -262,13 +282,13 @@ void SpaceGame::run()
 					newPlayer.characterType = "Player";
 					newPlayer.agentWonderWhenIdle = false;
 					newPlayer.agentCanRotate = true;
-					
+
 					newPlayer.setID(otherPlayerName);
 					agentManager.SpawnAgent(newPlayer);
 				}
 			}
 		}
-		
+
 		// Synchronse the network update thread
 		//networkUpdateThread.join();
 		// Handle events
@@ -298,15 +318,13 @@ void SpaceGame::run()
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
 				sendTCPMessage(IPAddress, port, "MOVE_SOUTH\n", ios, socket);
-
 			else if (state[SDL_SCANCODE_A])
 				sendTCPMessage(IPAddress, port, "MOVE_WEST\n", ios, socket);
-
 			else if (state[SDL_SCANCODE_D])
 				sendTCPMessage(IPAddress, port, "MOVE_EAST\n", ios, socket);
-
 			else if (state[SDL_SCANCODE_W])
 				sendTCPMessage(IPAddress, port, "MOVE_NORTH\n", ios, socket);
+			
 
 			// Player Actions
 			else if (state[SDL_SCANCODE_B])
@@ -317,20 +335,20 @@ void SpaceGame::run()
 
 		}//End pollevent if
 
-		
+
 		// Rendering process:
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
 		// Renders the background image
 		backgroundTexture.render(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_WIDTH, WINDOW_HEIGHT);
-		
 
-		
+
+
 		//////////////////////////////////
 		//MAIN CELL LOOP
 		///////////////////////////////////
-		
+
 		for (int x = 0; x < level.grid.size(); x++)
 		{
 			for (int y = 0; y < level.grid[x].size(); y++)
@@ -347,7 +365,7 @@ void SpaceGame::run()
 			} //End for Y loop
 		}//End for X loop
 		FillLevelWithCells = false;
-		 // Render the vector of hydroponics
+		// Render the vector of hydroponics
 		hydroponics.renderItems(renderer, level, allHydroponicsFarms);
 
 		// Render characters
@@ -356,10 +374,10 @@ void SpaceGame::run()
 		// TOOLBAR
 		toolbar.ToolBarFunctionality(level, designroom, dockingdoors, hydroponics, allHydroponicsFarms, renderer, mouse_X, mouse_Y);
 		toolbar.RenderToolbar(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, mouse_X, mouse_Y);
-		
-		
-		
-		
+
+
+
+
 
 		///////////////////////////////////////
 		//MENU
@@ -390,7 +408,7 @@ void SpaceGame::run()
 	// Send quit message and close socket when game ends
 	sendTCPMessage(IPAddress, port, "QUIT\n", ios, socket);
 	socket.close();
-	
+
 }
 
 

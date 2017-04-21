@@ -90,10 +90,7 @@ public:
 	//! Whether the client can enter their name in console
 	bool clientCanEnterName = false;
 
-	// Server connection deets
-	int port = 2222;
-	std::string IPAddresss = "46.101.9.185";
-	std::string IPAddress = "127.0.0.1";
+	
 
 	//! Network update tick
 	float timer;

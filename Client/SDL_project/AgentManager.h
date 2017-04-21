@@ -46,7 +46,7 @@ public:
 	bool renderStats = true;
 
 	//! Whether the game will draw the agent paths
-	bool drawAgentPaths = true;
+	bool drawAgentPaths = false;
 
 private:
 	std::string characterTextureLocation = "Resources\\Character\\";

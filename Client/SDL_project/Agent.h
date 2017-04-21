@@ -97,7 +97,7 @@ public:
 	//! Boolean for whether character is alive
 	bool isAlive = true;
 
-	bool agentWonderWhenIdle = true;
+	bool agentWonderWhenIdle = false;
 
 	bool agentCanRotate = true;
 	int agentRotation = 0;
@@ -111,7 +111,7 @@ private:
 	//! Point for where the agent is located
 	Point agentPointLocation;
 	//! Integer for the agent's size when rendered
-	int size = 35;
+	int size = 50;
 	//! Integer for the agent current speed
 	float speed = 2.0;
 	//! A double for the agents's health

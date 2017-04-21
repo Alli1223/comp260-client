@@ -9,8 +9,8 @@ SpaceGame::SpaceGame() : backgroundTexture("Resources\\background5.jpg")
 		throw InitialisationError("SDL_Init failed");
 	}
 	gameSettings.getScreenResolution();
-	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT / 2;
-	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH / 2;
+	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT;
+	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
 	window = SDL_CreateWindow("SpaceGame", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
 	
 	if (window == nullptr)
@@ -126,11 +126,7 @@ void SpaceGame::run()
 	agentManager.renderStats = false;
 
 	// Create the player
-	Agent player;
-	player.setPosition(50, 50);
-	player.characterType = "NPC";
-	player.agentWonderWhenIdle = false;
-	player.agentCanRotate = false;
+
 
 	// Server connection deets
 	int port = 2222;
@@ -168,12 +164,7 @@ void SpaceGame::run()
 	{
 		// Networking
 
-		//Spawn Player Once
-		if (spawnPlayer)
-		{
-			agentManager.SpawnAgent(player);
-			spawnPlayer = false;
-		}
+
 
 
 		bool runUpdate = false;
@@ -212,10 +203,26 @@ void SpaceGame::run()
 					// Update Player Positions
 					for (int i = 0; i < updateMessage.size(); i++)
 					{
+						
+
 						if (updateMessage[i] == *"X" && updateMessage[i + 1] == *":")
-							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(updateMessage[i + 2]);
-						if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
-							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(updateMessage[i + 2]);
+						{
+							// Convert string to int
+							std::string::size_type sz;
+							std::string updatenumber = "00";
+							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3];
+							int pos = std::stoi(updatenumber, &sz);
+							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
+						}
+						else if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
+						{// Convert string to int
+							std::string::size_type sz;
+							std::string updatenumber = "00";
+							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3];
+							int pos = std::stoi(updatenumber, &sz);
+							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
+						}
+						
 					}
 				}
 				//Spawn new player
@@ -223,9 +230,10 @@ void SpaceGame::run()
 				{
 					otherPlayerNames.push_back(otherPlayerName);
 					Agent newPlayer;
-					newPlayer.setPosition(50, 50);
+					//newPlayer.setPosition(1, 1);
 					newPlayer.characterType = "NPC";
 					newPlayer.agentWonderWhenIdle = false;
+					//newPlayer.setX(1), newPlayer.setY(1);
 					newPlayer.agentCanRotate = false;
 					newPlayer.setID(otherPlayerName);
 					agentManager.SpawnAgent(newPlayer);
@@ -233,8 +241,6 @@ void SpaceGame::run()
 			}
 		}
 		
-		
-
 		// Synchronse the network update thread
 		//networkUpdateThread.join();
 
@@ -261,26 +267,27 @@ void SpaceGame::run()
 			{
 				menu = false;
 			}
+			
 
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
 			{
-				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
+				//agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_SOUTH\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_A])
 			{
-				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
+				//agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_WEST\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
-				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
+				//agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_EAST\n", ios, socket);
 			}
 			else if (state[SDL_SCANCODE_W])
 			{
-				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
+				//agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_NORTH\n", ios, socket);
 			}
 
@@ -324,20 +331,6 @@ void SpaceGame::run()
 		// TOOLBAR
 		toolbar.ToolBarFunctionality(level, designroom, dockingdoors, hydroponics, allHydroponicsFarms, renderer, mouse_X, mouse_Y);
 		toolbar.RenderToolbar(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, mouse_X, mouse_Y);
-
-
-		// All agents move to mouse position
-		if (SDL_GetMouseState(&mouse_X, &mouse_Y) & SDL_BUTTON(SDL_BUTTON_MIDDLE))
-		{
-			for (int i = 0; i < agentManager.allAgents.size(); i++)
-			{
-				agentManager.allAgents[i].path.erase(agentManager.allAgents[i].path.begin(), agentManager.allAgents[i].path.end());
-				Point StartPoint(agentManager.allAgents[i].getCellX(), agentManager.allAgents[i].getCellY());
-				Point EndPoint(mouse_X / cellSize, mouse_Y / cellSize);
-
-				agentManager.allAgents[i].Move(level, StartPoint, EndPoint);
-			}
-		}
 		
 		
 		
@@ -356,7 +349,8 @@ void SpaceGame::run()
 			}
 			if (escapemenu.restart)
 			{
-				RecieveMessage(ios, socket);
+				socket.close();
+				socket.connect(endpoint);
 			}
 		}
 

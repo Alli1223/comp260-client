@@ -22,9 +22,9 @@ void AgentManager::SpawnAgent(std::string CharacterTypeVar, std::vector<Agent>& 
 		newAgent.characterType = CharacterTypeVar;
 		allAgents.push_back(newAgent);
 }
+
 void AgentManager::SpawnAgent(Agent& agent)
 {
-	//only spawn one
 	
 	allAgents.push_back(agent);
 }
@@ -99,7 +99,7 @@ void AgentManager::UpdateAgents(std::vector<Agent>& allAgents, SDL_Renderer* ren
 	for (Agent& agent : allAgents)
 	{
 		RenderAgents(agent, renderer, level);
-		agentBehaviour.DecideTask(level, agent);
+		//agentBehaviour.DecideTask(level, agent);
 	}
 }
 

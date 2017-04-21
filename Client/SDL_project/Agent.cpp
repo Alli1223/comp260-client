@@ -65,8 +65,8 @@ void Agent::Update(Level& level)
 	}
 
 	// if agent is dead
-	if (this->getHealth() <= 0)
-		this->isAlive = false;
+	//if (this->getHealth() <= 0)
+		//this->isAlive = false;
 
 	/* if agent reaches bed || toilet then reset values
 	if (level.grid[cellX][cellY]->isToilet)

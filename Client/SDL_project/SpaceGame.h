@@ -63,6 +63,8 @@ public:
 	NetworkManager networkManager;
 	NetworkClient networkClient;
 
+	
+
 
 	//! Conains the list of nodes that makes the path
 	//std::vector<Point> path;
@@ -74,8 +76,8 @@ public:
 	std::vector<Ship> allShips;
 
 	//! Vector of all other players names in the game
-
 	std::vector<std::string> otherPlayerNames;
+
 	//! The window width 
 	int WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
 	//! The window height
@@ -85,6 +87,7 @@ public:
 
 	bool FillLevelWithCells = true;
 	bool spawnPlayer = true;
+	//! Whether the client can enter their name in console
 	bool clientCanEnterName = false;
 private:
 

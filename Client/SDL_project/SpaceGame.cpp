@@ -110,9 +110,9 @@ void sendTCPMessage(std::string host, int port, std::string message, boost::asio
 }
 void SpaceGame::networkUpdate()
 {
-
 	//BORKEN
-	//std::thread networkUpdateThread(&SpaceGame::networkUpdate, socket);
+	//std::thread networkUpdateThread(&SpaceGame::networkUpdate);
+	
 }
 void SpaceGame::run()
 {
@@ -130,6 +130,7 @@ void SpaceGame::run()
 
 	// Server connection deets
 	int port = 2222;
+	std::string ExternalIPAddress = "46.101.9.185";
 	std::string IPAddress = "127.0.0.1";
 
 	// Create socket and io service then connect to sever
@@ -159,19 +160,18 @@ void SpaceGame::run()
 
 	std::cout << "PlayerName: " << playerName << std::endl;
 
+	
+
 	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
 		// Networking
 
-
-
-
 		bool runUpdate = false;
 
 		float timer = sin(SDL_GetTicks() / 1000);
 		// Do every 200 ms
-		if (timer >= 0.99999 || timer <= -0.99999)
+		if (timer > 0)
 			runUpdate = true;
 
 		if (true)
@@ -203,26 +203,51 @@ void SpaceGame::run()
 					// Update Player Positions
 					for (int i = 0; i < updateMessage.size(); i++)
 					{
-						
-
 						if (updateMessage[i] == *"X" && updateMessage[i + 1] == *":")
 						{
 							// Convert string to int
 							std::string::size_type sz;
-							std::string updatenumber = "00";
-							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3];
+							std::string updatenumber = "      ";
+							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3]; updatenumber[2] = updateMessage[i + 4];
+							updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
 							int pos = std::stoi(updatenumber, &sz);
+							pos *= 50;
 							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
 						}
-						else if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
+						if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
 						{// Convert string to int
 							std::string::size_type sz;
-							std::string updatenumber = "00";
-							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3];
+							std::string updatenumber = "    ";
+							updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3]; updatenumber[2] = updateMessage[i + 4];
+							updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
 							int pos = std::stoi(updatenumber, &sz);
+							pos *= 50;
 							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
 						}
-						
+
+
+						// Update Player Actions
+						std::string otherPlayerAction = "                                      ";
+						if (updateMessage[i] == *"A" && updateMessage[i + 1] == *"C" && updateMessage[i + 2] == *"T" && updateMessage[i + 3] == *":")
+						{
+							for (int j = 0; j < 10; j++)
+							{
+								if (updateMessage[i + 4 + j] == *".")
+									break;
+								otherPlayerAction[j] = updateMessage[i + 4 + j];
+								
+							}
+							//Remove Spaces
+							otherPlayerAction.erase(std::remove(otherPlayerAction.begin(), otherPlayerAction.end(), ' '), otherPlayerAction.end());
+							if (otherPlayerAction == "PLACE_BED")
+							{
+								level.grid[agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() / 50][agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() / 50]->isBed = true;
+							}
+							if (otherPlayerAction == "PLACE_BOX")
+							{
+								level.grid[agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() / 50][agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() / 50]->isCargo = true;
+							}
+						}
 					}
 				}
 				//Spawn new player
@@ -231,7 +256,10 @@ void SpaceGame::run()
 					otherPlayerNames.push_back(otherPlayerName);
 					Agent newPlayer;
 					//newPlayer.setPosition(1, 1);
-					newPlayer.characterType = "NPC";
+					if(agentManager.allAgents.size() < 1)
+						newPlayer.characterType = "Player";
+					else
+						newPlayer.characterType = "NPC";
 					newPlayer.agentWonderWhenIdle = false;
 					//newPlayer.setX(1), newPlayer.setY(1);
 					newPlayer.agentCanRotate = false;
@@ -271,25 +299,23 @@ void SpaceGame::run()
 
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
-			{
-				//agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_SOUTH\n", ios, socket);
-			}
+			
 			else if (state[SDL_SCANCODE_A])
-			{
-				//agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_WEST\n", ios, socket);
-			}
+			
 			else if (state[SDL_SCANCODE_D])
-			{
-				//agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_EAST\n", ios, socket);
-			}
+			
 			else if (state[SDL_SCANCODE_W])
-			{
-				//agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - cellSize);
 				sendTCPMessage(IPAddress, port, "MOVE_NORTH\n", ios, socket);
-			}
+
+			// Player Actions
+			else if (state[SDL_SCANCODE_B])
+				sendTCPMessage(IPAddress, port, "PLACE_BED\n", ios, socket);
+			else if (state[SDL_SCANCODE_C])
+				sendTCPMessage(IPAddress, port, "PLACE_BOX\n", ios, socket);
+			
 
 		}//End pollevent if
 

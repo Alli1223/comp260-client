@@ -114,7 +114,6 @@ void AgentManager::RenderAgents(Agent& agent, SDL_Renderer* renderer, Level& lev
 
 
 		//Render agent stats to the right of agent
-
 		if (renderStats)
 		{
 			if (agent.getHealth() < 100.0)

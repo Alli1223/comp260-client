@@ -94,7 +94,9 @@
     <ClCompile Include="NetworkClient.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>Source Files\Networking</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fire.h">
@@ -199,7 +201,9 @@
     <ClInclude Include="NetworkClient.h">
       <Filter>Headers\Networking</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="NetworkManager.h">
+      <Filter>Headers\Networking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SDL_project.rc" />

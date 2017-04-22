@@ -79,31 +79,24 @@ void SpaceGame::run()
 	bool MessageSent = false;
 	double lastTime = SDL_GetTicks();
 	double timebehind = 0;
-	bool run = false;
-	//bool AlwaysUpdate = tru;
+	bool runNetworkTick = false;
 	/////////// MAIN LOOP /////////////////
 	while (running)
 	{
-
+		// Interval Timer
 		timebehind += SDL_GetTicks() - lastTime;
 		lastTime = SDL_GetTicks();
 
-
-
-
-		while (timebehind >= 50)
+		//Update intervalTimer
+		while (timebehind >= networkManager.networkUpdateInterval)
 		{
-			// Update the game.
-			run = true;
-			// Every time we update, we subtract a timestep from the amount we are behind.
-			timebehind -= 50;
+			runNetworkTick = true;
+			timebehind -= networkManager.networkUpdateInterval;
 		}
 
 
-
-
-		// Only run when the player moves
-		if (run)
+		// Update network
+		if (runNetworkTick)
 		{
 			networkManager.NetworkUpdate(level, agentManager, socket);
 		}
@@ -129,9 +122,8 @@ void SpaceGame::run()
 				running = false;
 			}
 			else if (state[SDL_SCANCODE_ESCAPE] && menu == true)
-			{
 				menu = false;
-			}
+
 
 
 			// Player Movement
@@ -184,15 +176,11 @@ void SpaceGame::run()
 			} //End for Y loop
 		}//End for X loop
 		FillLevelWithCells = false;
-		// Render the vector of hydroponics
-		hydroponics.renderItems(renderer, level, allHydroponicsFarms);
+
 
 		// Render characters
 		agentManager.UpdateAgents(agentManager.allAgents, renderer, level);
 
-		// TOOLBAR
-		toolbar.ToolBarFunctionality(level, designroom, dockingdoors, hydroponics, allHydroponicsFarms, renderer, mouse_X, mouse_Y);
-		toolbar.RenderToolbar(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, mouse_X, mouse_Y);
 
 
 

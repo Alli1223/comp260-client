@@ -22,6 +22,9 @@ public:
 	std::string IPAddresss = "46.101.9.185";
 	std::string IPAddress = "127.0.0.1";
 
+	//! Network update interval
+	int networkUpdateInterval = 100;
+
 	//! Vector of all other players names in the game
 	std::vector<std::string> otherPlayerNames;
 	

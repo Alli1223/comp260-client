@@ -51,33 +51,39 @@ bool DoesPlayerExist(std::vector<std::string>& playerNames, std::string playerna
 	return false;
 }
 
+int GetGameInfo(std::string message)
+{
+	//Number of players
+	for (int i = 0; i < message.size(); i++)
+	{
+		if (message[i] == *"r" && message[i + 1] == *"#" && message[i + 2] == *":")
+		{
+			// Convert string to int
+			std::string::size_type sz;
+			std::string updatenumber = "      ";
+			updatenumber[0] = message[i + 3]; updatenumber[1] = message[i + 4];
+			// Remove white space
+			updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
+			int num = std::stoi(updatenumber, &sz);
+
+			return num;
+
+		}
+		
+	}
+	return 0;
+}
+
 // Update every frame
 void NetworkManager::NetworkUpdate(Level& level, AgentManager& agentManager, boost::asio::ip::tcp::socket& socket)
 {
 
-	bool MessageSent = false;
-	double lastTime = SDL_GetTicks();
-	double timebehind = 0;
-	bool run = false;
-	//bool AlwaysUpdate = tru;
-	/////////// MAIN LOOP /////////////////
+	//Request number of current players
+	//sendTCPMessage(IPAddress, port, "NUMBER_OF_PLAYERS_REQUEST\n", ios, socket);
+	//std::string playerNumberString = RecieveMessage(ios, socket);
+	//int numberOfPlayers = GetGameInfo(playerNumberString);
 
-
-	timebehind += SDL_GetTicks() - lastTime;
-	lastTime = SDL_GetTicks();
-
-
-
-	while (timebehind >= 50)
-	{
-		// Update the game.
-		run = true;
-		// Every time we update, we subtract a timestep from the amount we are behind.
-		timebehind -= 50;
-	}
-
-
-	run = false;
+	// Request player locations
 	sendTCPMessage(IPAddress, port, "PLAYER_LOCATIONS_REQUEST\n", ios, socket);
 	std::string updateMessage = RecieveMessage(ios, socket);
 	if (updateMessage != "NULL" && updateMessage != "QUIT" && updateMessage[0] == *"<")
@@ -104,6 +110,7 @@ void NetworkManager::NetworkUpdate(Level& level, AgentManager& agentManager, boo
 			// Update Player Positions
 			for (int i = 0; i < updateMessage.size(); i++)
 			{
+				bool xUpdate = false, yUpdate = false;
 				if (updateMessage[i] == *"X" && updateMessage[i + 1] == *":")
 				{
 					// Convert string to int
@@ -115,9 +122,12 @@ void NetworkManager::NetworkUpdate(Level& level, AgentManager& agentManager, boo
 					int pos = std::stoi(updatenumber, &sz);
 					pos *= level.getCellSize();
 					if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() != pos)
+					{
 						agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
+						xUpdate = true;
+					}
 				}
-				else if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
+				if (updateMessage[i] == *"Y" && updateMessage[i + 1] == *":")
 				{
 					// Convert string to int
 					std::string::size_type sz;
@@ -128,8 +138,13 @@ void NetworkManager::NetworkUpdate(Level& level, AgentManager& agentManager, boo
 					int pos = std::stoi(updatenumber, &sz);
 					pos *= level.getCellSize();
 					if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() != pos)
+					{
 						agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
+						yUpdate = true;
+					}
 				}
+				if (xUpdate && yUpdate)
+					break;
 
 
 				// Update Player Actions
@@ -158,10 +173,6 @@ void NetworkManager::NetworkUpdate(Level& level, AgentManager& agentManager, boo
 				}
 			}
 		}
-
-
-
-
 
 
 		//Spawn new player
@@ -207,7 +218,6 @@ void NetworkManager::sendTCPMessage(std::string host, int port, std::string mess
 	{
 		std::cerr << e.what() << std::endl;
 	}
-	//RecieveMessage(ios, socket);
 }
 
 

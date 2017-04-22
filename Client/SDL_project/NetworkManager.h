@@ -16,8 +16,12 @@ public:
 	void NetworkManager::sendTCPMessage(std::string message, boost::asio::ip::tcp::socket& socket);
 	//! Process the players location from string
 	void NetworkManager::ProcessPlayerLocations(std::string updateMessage, Level& level, AgentManager& agentManager, boost::asio::ip::tcp::socket& socket);
+	//! Process a list of player locations
+	void NetworkManager::ProcessArrayOfPlayerLocations(std::string updateMessage, Level& level, AgentManager& agentManager, boost::asio::ip::tcp::socket& socket);
 	//! Return a string from recieve message
 	std::string NetworkManager::RecieveMessage(boost::asio::ip::tcp::socket& socket);
+
+	void NetworkManager::runMultiThread(Level& level, AgentManager& agentManager, boost::asio::ip::tcp::socket& socket);
 
 	// Server connection deets
 	int port = 2222;
@@ -25,12 +29,18 @@ public:
 	std::string IPAddress = "127.0.0.1";
 
 	//! Network update interval
-	int networkUpdateInterval = 50;
+	int networkUpdateInterval = 100;
+
+	bool GetNumPlayers = true;
+	int numberOfPlayers = 0;
 
 	//! Vector of all other players names in the game
 	std::vector<std::string> otherPlayerNames;
 	
 	boost::asio::io_service ios;
+
+private:
+	std::vector<std::thread> some_threads;
 	
 	
 };

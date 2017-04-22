@@ -76,7 +76,6 @@ void SpaceGame::run()
 	std::cout << "PlayerName: " << playerName << std::endl;
 
 
-	bool MessageSent = false;
 	double lastTime = SDL_GetTicks();
 	double timebehind = 0;
 	bool runNetworkTick = false;
@@ -98,6 +97,7 @@ void SpaceGame::run()
 		// Update network
 		if (runNetworkTick)
 		{
+			runNetworkTick = false;
 			networkManager.NetworkUpdate(level, agentManager, socket);
 		}
 

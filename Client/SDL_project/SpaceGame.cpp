@@ -70,8 +70,8 @@ void SpaceGame::run()
 	playerName = playerName + "\n";
 
 	// Send initial message with player name
-	networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, playerName, ios, socket);
-	std::string name = networkManager.RecieveMessage(ios, socket);
+	networkManager.sendTCPMessage(playerName, socket);
+	std::string name = networkManager.RecieveMessage(socket);
 
 	std::cout << "PlayerName: " << playerName << std::endl;
 
@@ -128,20 +128,20 @@ void SpaceGame::run()
 
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "MOVE_SOUTH\n", ios, socket);
+				networkManager.sendTCPMessage("MOVE_SOUTH\n", socket);
 			else if (state[SDL_SCANCODE_A])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "MOVE_WEST\n", ios, socket);
+				networkManager.sendTCPMessage("MOVE_WEST\n", socket);
 			else if (state[SDL_SCANCODE_D])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "MOVE_EAST\n", ios, socket);
+				networkManager.sendTCPMessage("MOVE_EAST\n", socket);
 			else if (state[SDL_SCANCODE_W])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "MOVE_NORTH\n", ios, socket);
+				networkManager.sendTCPMessage("MOVE_NORTH\n", socket);
 			
 
 			// Player Actions
 			else if (state[SDL_SCANCODE_B])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "PLACE_BED\n", ios, socket);
-			else if (state[SDL_SCANCODE_C])
-				networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "PLACE_BOX\n", ios, socket);
+				networkManager.sendTCPMessage("PLACE_BED\n", socket);
+			else if (state[SDL_SCANCODE_C])					 
+				networkManager.sendTCPMessage("PLACE_BOX\n", socket);
 
 
 		}//End pollevent if
@@ -213,7 +213,7 @@ void SpaceGame::run()
 	}// End while running
 
 	// Send quit message and close socket when game ends
-	networkManager.sendTCPMessage(networkManager.IPAddress, networkManager.port, "QUIT\n", ios, socket);
+	networkManager.sendTCPMessage("QUIT\n", socket);
 	socket.close();
 
 }

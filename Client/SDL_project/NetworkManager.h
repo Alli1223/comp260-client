@@ -29,17 +29,20 @@ public:
 	std::string IPAddress = "127.0.0.1";
 
 	//! Network update interval
-	int networkUpdateInterval = 100;
+	int networkUpdateInterval = 200;
 
-	bool GetNumPlayers = true;
+	//! Whether the client should request playernumers
+	bool GetNumPlayers = false;
+	//! Stores the number of players in the game
 	int numberOfPlayers = 0;
 
 	//! Vector of all other players names in the game
 	std::vector<std::string> otherPlayerNames;
-	
+	//! the io service for creating the socket
 	boost::asio::io_service ios;
 
 private:
+	//! for when I get round to making the client multi threaded
 	std::vector<std::thread> some_threads;
 	
 	

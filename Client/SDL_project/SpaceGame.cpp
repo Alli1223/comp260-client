@@ -75,7 +75,7 @@ void SpaceGame::run()
 
 	std::cout << "PlayerName: " << playerName << std::endl;
 
-
+	// values for the network update timer
 	double lastTime = SDL_GetTicks();
 	double timebehind = 0;
 	bool runNetworkTick = false;

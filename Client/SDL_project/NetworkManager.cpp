@@ -159,12 +159,15 @@ void NetworkManager::ProcessPlayerLocations(std::string updateMessage, Level& le
 						// Convert string to int
 						std::string::size_type sz;
 						std::string updatenumber = "        ";
+						// Get the three digits after
 						updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3]; updatenumber[2] = updateMessage[i + 4];
 						// Remove white space
 						updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
+						//convert string to int
 						int pos = std::stoi(updatenumber, &sz);
 						pos *= level.getCellSize();
-						if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() != pos)
+						// Only update if the y position has changed
+						//if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getX() != pos)
 							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setX(pos);
 					
 					}
@@ -174,12 +177,15 @@ void NetworkManager::ProcessPlayerLocations(std::string updateMessage, Level& le
 						// Convert string to int
 						std::string::size_type sz;
 						std::string updatenumber = "            ";
+						// Get the three digits after
 						updatenumber[0] = updateMessage[i + 2]; updatenumber[1] = updateMessage[i + 3]; updatenumber[2] = updateMessage[i + 4];
 						// Remove white space
 						updatenumber.erase(std::remove(updatenumber.begin(), updatenumber.end(), ' '), updatenumber.end());
+						//convert string to int
 						int pos = std::stoi(updatenumber, &sz);
 						pos *= level.getCellSize();
-						if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() != pos)
+						// Only update if the y position has changed
+						//if (agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].getY() != pos)
 							agentManager.allAgents[agentManager.GetAgentNumberFomID(otherPlayerName)].setY(pos);
 					}
 					
@@ -217,14 +223,22 @@ void NetworkManager::ProcessPlayerLocations(std::string updateMessage, Level& le
 		//Spawn new player
 		else
 		{
-			otherPlayerNames.push_back(otherPlayerName);
-			Agent newPlayer;
-			newPlayer.characterType = "Player";
-			newPlayer.agentWonderWhenIdle = false;
-			newPlayer.agentCanRotate = true;
+			// Fix double spawn issue
+			if (updateMessage.size() > 1)
+			{
+				otherPlayerNames.push_back(otherPlayerName);
+				Agent newPlayer;
+				// If the agent is first player
+				if (agentManager.allAgents.size() < 1)
+					newPlayer.characterType = "Player";
+				else
+					newPlayer.characterType = "NPC";
+				newPlayer.agentWonderWhenIdle = false;
+				newPlayer.agentCanRotate = true;
 
-			newPlayer.setID(otherPlayerName);
-			agentManager.SpawnAgent(newPlayer);
+				newPlayer.setID(otherPlayerName);
+				agentManager.SpawnAgent(newPlayer);
+			}
 		}
 	}
 }

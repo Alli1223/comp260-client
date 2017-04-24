@@ -123,7 +123,6 @@ void SpaceGame::run()
 			if (state[SDL_SCANCODE_ESCAPE] && menu == false)
 			{
 				menu = true;
-				running = false;
 			}
 			else if (state[SDL_SCANCODE_ESCAPE] && menu == true)
 				menu = false;

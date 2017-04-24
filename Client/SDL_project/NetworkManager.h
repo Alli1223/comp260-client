@@ -32,12 +32,12 @@ public:
 	//! Whether the client should connect to external server
 	bool isServerLocal = true;
 	//! Whether the client can enter their name in console
-	bool clientCanEnterName = true;
+	bool clientCanEnterName = false;
 	//! Whether the client should request playernumers
 	bool GetNumPlayers = false;
 
 	//! Network update interval
-	int networkUpdateInterval = 30;
+	int networkUpdateInterval = 20;
 	//! Stores the number of players in the game
 	int numberOfPlayers = 0;
 

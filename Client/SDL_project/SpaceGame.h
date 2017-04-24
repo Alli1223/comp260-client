@@ -42,7 +42,6 @@ public:
 
 	//! Removes all the data from stored vectors
 	void SpaceGame::deleteVectors();
-	void SpaceGame::networkUpdate();
 	//! Initalising all classes needed for game
 	Level level;
 	GameSettings gameSettings;

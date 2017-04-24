@@ -87,8 +87,7 @@ public:
 
 	bool FillLevelWithCells = true;
 	bool spawnPlayer = true;
-	//! Whether the client can enter their name in console
-	bool clientCanEnterName = false;
+	
 
 	
 

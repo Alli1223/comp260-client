@@ -25,16 +25,26 @@ public:
 
 	// Server connection deets
 	int port = 2222;
-	std::string IPAddresss = "46.101.9.185";
-	std::string IPAddress = "127.0.0.1";
+	
+	std::string ExternalIPAddress = "46.101.9.185";
+	std::string InternalIPAddresss = "127.0.0.1";
 
-	//! Network update interval
-	int networkUpdateInterval = 200;
-
+	//! Whether the client should connect to external server
+	bool isServerLocal = true;
+	//! Whether the client can enter their name in console
+	bool clientCanEnterName = true;
 	//! Whether the client should request playernumers
 	bool GetNumPlayers = false;
+
+	//! Network update interval
+	int networkUpdateInterval = 30;
 	//! Stores the number of players in the game
 	int numberOfPlayers = 0;
+
+	//! get and set server IP address
+	std::string getServerIP() { return IPAddress; }
+	std::string setServerIP(std::string newIP) { return IPAddress = newIP; }
+	
 
 	//! Vector of all other players names in the game
 	std::vector<std::string> otherPlayerNames;
@@ -44,7 +54,7 @@ public:
 private:
 	//! for when I get round to making the client multi threaded
 	std::vector<std::thread> some_threads;
-	
-	
+	//! for ip Address
+	std::string IPAddress;
 };
 

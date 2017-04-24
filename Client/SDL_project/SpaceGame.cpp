@@ -46,12 +46,16 @@ void SpaceGame::run()
 	int cellSize = level.getCellSize();
 	agentManager.renderStats = false;
 
+	// If the client wants to connect to loopback address or external server
+	if (networkManager.isServerLocal)
+		networkManager.setServerIP(networkManager.InternalIPAddresss);
+	else
+		networkManager.setServerIP(networkManager.ExternalIPAddress);
 	
 	// Create socket and io service then connect to sever
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
-	
-	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(networkManager.IPAddress), networkManager.port);
+	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(networkManager.getServerIP()), networkManager.port);
 	socket.connect(endpoint);
 	
 	// Create a unique playername
@@ -59,7 +63,7 @@ void SpaceGame::run()
 
 
 	// Or Get player name
-	if (clientCanEnterName)
+	if (networkManager.clientCanEnterName)
 	{
 		std::cout << "ENTER YOUR NAME: " << std::endl;
 		std::cin >> playerName;

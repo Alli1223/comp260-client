@@ -9,8 +9,8 @@ SpaceGame::SpaceGame() : backgroundTexture("Resources\\background5.jpg")
 		throw InitialisationError("SDL_Init failed");
 	}
 	gameSettings.getScreenResolution();
-	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT / 2;
-	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH / 2;
+	WINDOW_HEIGHT = gameSettings.WINDOW_HEIGHT;
+	WINDOW_WIDTH = gameSettings.WINDOW_WIDTH;
 	window = SDL_CreateWindow("SpaceGame", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE);
 	
 	if (window == nullptr)
@@ -69,14 +69,12 @@ void SpaceGame::run()
 		std::cin >> playerName;
 		std::cout << "NAME: " << playerName << std::endl;
 	}
-
-	// add endline suffix to name
-	playerName = playerName + "\n";
+	
 
 	// Send initial message with player name
-	networkManager.sendTCPMessage(playerName, socket);
-	std::string name = networkManager.RecieveMessage(socket);
-
+	networkManager.sendTCPMessage(playerName + "\n", socket);
+	networkManager.RecieveMessage(socket);
+	networkManager.setPlayerName(playerName);
 	std::cout << "PlayerName: " << playerName << std::endl;
 
 	// values for the network update timer
@@ -131,13 +129,25 @@ void SpaceGame::run()
 
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
-				networkManager.sendTCPMessage("MOVE_SOUTH\n", socket);
+			{
+				//agentManager.allAgents[0].setCellY(agentManager.allAgents[0].getCellY() + 1);
+				networkManager.sendTCPMessage("MOVE_SOUTH\n", socket); 
+			}
 			else if (state[SDL_SCANCODE_A])
+			{
+				//agentManager.allAgents[0].setCellX(agentManager.allAgents[0].getCellX() - 1);
 				networkManager.sendTCPMessage("MOVE_WEST\n", socket);
+			}
 			else if (state[SDL_SCANCODE_D])
+			{
+				//agentManager.allAgents[0].setCellX(agentManager.allAgents[0].getCellX() + 1); 
 				networkManager.sendTCPMessage("MOVE_EAST\n", socket);
+			}
 			else if (state[SDL_SCANCODE_W])
+			{
+				//agentManager.allAgents[0].setCellY(agentManager.allAgents[0].getCellY() - 1);
 				networkManager.sendTCPMessage("MOVE_NORTH\n", socket);
+			}
 			
 
 			// Player Actions
@@ -157,7 +167,12 @@ void SpaceGame::run()
 		// Renders the background image
 		backgroundTexture.render(renderer, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-
+		int playerX = 0, playerY = 0;
+		if (agentManager.allAgents.size() >= 1)
+		{
+			playerX = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getX();
+			playerY = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getY();
+		}
 
 		//////////////////////////////////
 		//MAIN CELL LOOP
@@ -165,10 +180,10 @@ void SpaceGame::run()
 
 		for (int x = 0; x < level.grid.size(); x++)
 		{
-			for (int y = 0; y < level.grid[x].size(); y++)
+			for (int y = 0; y < level.grid[0].size(); y++)
 			{
 				//Renders all he cells
-				cellrenderer.RenderCells(level, renderer, x, y);
+				cellrenderer.RenderCells(level, renderer, x , y );
 
 				if (FillLevelWithCells)
 				{
@@ -196,6 +211,7 @@ void SpaceGame::run()
 		if (menu)
 		{
 			escapemenu.RunEscapeMenu(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, mouse_X, mouse_Y, running);
+			running = false;
 			if (escapemenu.exit)
 			{
 				running = false;

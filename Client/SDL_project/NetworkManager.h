@@ -37,13 +37,19 @@ public:
 	bool GetNumPlayers = false;
 
 	//! Network update interval
-	int networkUpdateInterval = 20;
+	int networkUpdateInterval = 200;
 	//! Stores the number of players in the game
 	int numberOfPlayers = 0;
+
+	
 
 	//! get and set server IP address
 	std::string getServerIP() { return IPAddress; }
 	std::string setServerIP(std::string newIP) { return IPAddress = newIP; }
+
+	//! get and set server IP address
+	std::string getPlayerName() { return localPlayerName; }
+	std::string setPlayerName(std::string newPlayerName) { return localPlayerName = newPlayerName; }
 	
 
 	//! Vector of all other players names in the game
@@ -56,5 +62,7 @@ private:
 	std::vector<std::thread> some_threads;
 	//! for ip Address
 	std::string IPAddress;
+	//! For the name of the local player
+	std::string localPlayerName;
 };
 

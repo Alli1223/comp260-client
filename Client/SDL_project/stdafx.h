@@ -37,6 +37,8 @@
 #include <math.h>
 #include <fstream>
 #include <thread>
+#include <numeric>
+#include <random>
 #define PI 3.14159265
 
 #include <boost/asio.hpp>

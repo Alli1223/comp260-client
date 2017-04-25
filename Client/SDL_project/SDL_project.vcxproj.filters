@@ -97,6 +97,9 @@
     <ClCompile Include="NetworkManager.cpp">
       <Filter>Source Files\Networking</Filter>
     </ClCompile>
+    <ClCompile Include="PerlinNoise.cpp">
+      <Filter>Source Files\Level Classes\PCG</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fire.h">
@@ -204,6 +207,9 @@
     <ClInclude Include="NetworkManager.h">
       <Filter>Headers\Networking</Filter>
     </ClInclude>
+    <ClInclude Include="PerlinNoise.h">
+      <Filter>Headers\Level Classes\PCG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SDL_project.rc" />
@@ -290,6 +296,12 @@
     </Filter>
     <Filter Include="Source Files\Networking">
       <UniqueIdentifier>{bd94d9cf-f265-4562-a158-91d0f2a7751c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\Level Classes\PCG">
+      <UniqueIdentifier>{a5aab3f2-8326-4ac0-9d87-4354c26bcb25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Level Classes\PCG">
+      <UniqueIdentifier>{d3abee87-400c-43d1-8dc3-aea6d835fd0c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

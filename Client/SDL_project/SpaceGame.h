@@ -24,6 +24,7 @@
 #include "Agent.h"
 #include "NetworkManager.h"
 #include "NetworkClient.h"
+#include "PerlinNoise.h"
 
 //! The main class
 /*!
@@ -61,6 +62,7 @@ public:
 	Hydroponics hydroponics;
 	NetworkManager networkManager;
 	NetworkClient networkClient;
+	PerlinNoise perlinNoise;
 
 	
 
@@ -87,7 +89,7 @@ public:
 	bool FillLevelWithCells = true;
 	bool spawnPlayer = true;
 	
-
+	bool useNetworking = false;
 	
 
 	//! Network update tick

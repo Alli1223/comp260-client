@@ -179,6 +179,7 @@
     <ClInclude Include="NetworkClient.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="PathFinder.h" />
+    <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PlayerStats.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RoomDesign.h" />
@@ -216,6 +217,7 @@
     <ClCompile Include="NetworkClient.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="PathFinder.cpp" />
+    <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PlayerStats.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="RoomDesign.cpp" />

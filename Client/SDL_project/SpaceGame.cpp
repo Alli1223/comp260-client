@@ -23,6 +23,8 @@ SpaceGame::SpaceGame() : backgroundTexture("Resources\\background5.jpg")
 	{
 		throw InitialisationError("SDL_CreateRenderer failed");
 	}
+
+	
 	
 }
 
@@ -37,45 +39,61 @@ SpaceGame::~SpaceGame()
 
 void SpaceGame::run()
 {
+	running = true;
 	// Creates a grid of cells
 	level.makeGrid(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	running = true;
-	unsigned int timer = 0;
-
 	int cellSize = level.getCellSize();
-	agentManager.renderStats = false;
+
+	//generate noise from seed
+	perlinNoise.GenerateNoise(SDL_GetTicks());
+	
+	
 
 	// If the client wants to connect to loopback address or external server
 	if (networkManager.isServerLocal)
 		networkManager.setServerIP(networkManager.InternalIPAddresss);
 	else
 		networkManager.setServerIP(networkManager.ExternalIPAddress);
-	
+
 	// Create socket and io service then connect to sever
 	boost::asio::io_service ios;
 	boost::asio::ip::tcp::socket socket(ios);
 	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(networkManager.getServerIP()), networkManager.port);
-	socket.connect(endpoint);
-	
 	// Create a unique playername
 	std::string playerName = std::to_string(SDL_GetTicks());
-
-
-	// Or Get player name
-	if (networkManager.clientCanEnterName)
+	if (useNetworking)
 	{
-		std::cout << "ENTER YOUR NAME: " << std::endl;
-		std::cin >> playerName;
-		std::cout << "NAME: " << playerName << std::endl;
+		socket.connect(endpoint);
+
+
+
+
+		// Or Get player name
+		if (networkManager.clientCanEnterName)
+		{
+			std::cout << "ENTER YOUR NAME: " << std::endl;
+			std::cin >> playerName;
+			std::cout << "NAME: " << playerName << std::endl;
+		}
+
+
+		// Send initial message with player name
+		networkManager.sendTCPMessage(playerName + "\n", socket);
+		networkManager.RecieveMessage(socket);
+		networkManager.setPlayerName(playerName);
+		std::cout << "PlayerName: " << playerName << std::endl;
+	}
+	else
+	{
+		Agent player;
+		player.characterType = "Player";
+		player.setX(50);
+		player.setY(50);
+		agentManager.SpawnAgent(player);
 	}
 	
-
-	// Send initial message with player name
-	networkManager.sendTCPMessage(playerName + "\n", socket);
-	networkManager.RecieveMessage(socket);
-	networkManager.setPlayerName(playerName);
-	std::cout << "PlayerName: " << playerName << std::endl;
+	
+	
 
 	// values for the network update timer
 	double lastTime = SDL_GetTicks();
@@ -97,11 +115,12 @@ void SpaceGame::run()
 
 
 		// Update network
-		if (runNetworkTick)
+		if (runNetworkTick && useNetworking)
 		{
 			runNetworkTick = false;
 			networkManager.NetworkUpdate(level, agentManager, socket);
 		}
+
 
 		// Synchronse the network update thread
 		//networkUpdateThread.join();
@@ -130,30 +149,30 @@ void SpaceGame::run()
 			// Player Movement
 			else if (state[SDL_SCANCODE_S])
 			{
-				//agentManager.allAgents[0].setCellY(agentManager.allAgents[0].getCellY() + 1);
-				networkManager.sendTCPMessage("MOVE_SOUTH\n", socket); 
+				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() + agentManager.allAgents[0].getSpeed());
+				networkManager.sendTCPMessage("MOVE_SOUTH\n", socket);
 			}
 			else if (state[SDL_SCANCODE_A])
 			{
-				//agentManager.allAgents[0].setCellX(agentManager.allAgents[0].getCellX() - 1);
+				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() - agentManager.allAgents[0].getSpeed());
 				networkManager.sendTCPMessage("MOVE_WEST\n", socket);
 			}
 			else if (state[SDL_SCANCODE_D])
 			{
-				//agentManager.allAgents[0].setCellX(agentManager.allAgents[0].getCellX() + 1); 
+				agentManager.allAgents[0].setX(agentManager.allAgents[0].getX() + agentManager.allAgents[0].getSpeed());
 				networkManager.sendTCPMessage("MOVE_EAST\n", socket);
 			}
 			else if (state[SDL_SCANCODE_W])
 			{
-				//agentManager.allAgents[0].setCellY(agentManager.allAgents[0].getCellY() - 1);
+				agentManager.allAgents[0].setY(agentManager.allAgents[0].getY() - agentManager.allAgents[0].getSpeed());
 				networkManager.sendTCPMessage("MOVE_NORTH\n", socket);
 			}
-			
+
 
 			// Player Actions
 			else if (state[SDL_SCANCODE_B])
 				networkManager.sendTCPMessage("PLACE_BED\n", socket);
-			else if (state[SDL_SCANCODE_C])					 
+			else if (state[SDL_SCANCODE_C])
 				networkManager.sendTCPMessage("PLACE_BOX\n", socket);
 
 
@@ -170,8 +189,8 @@ void SpaceGame::run()
 		int playerX = 0, playerY = 0;
 		if (agentManager.allAgents.size() >= 1)
 		{
-			playerX = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getX();
-			playerY = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getY();
+			//playerX = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getX();
+			//playerY = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getY();
 		}
 
 		//////////////////////////////////
@@ -182,13 +201,18 @@ void SpaceGame::run()
 		{
 			for (int y = 0; y < level.grid[0].size(); y++)
 			{
+				double noise = perlinNoise.noise((double)x / 180.0, (double)y / 180.0, (double)x / 180.0);
+				//terrainHeight = (char)((terrainHeight - noiseMin) * (255 / (noiseMax - noiseMin)));
+				
+				level.grid[x][y]->noiseValue = noise * 500;
 				//Renders all he cells
-				cellrenderer.RenderCells(level, renderer, x , y );
+				cellrenderer.RenderCells(level, renderer, x, y);
 
+				
 				if (FillLevelWithCells)
 				{
 					level.grid[x][y]->isRoom = true;
-
+					
 				}
 
 			} //End for Y loop

@@ -43,7 +43,7 @@ public:
 	void AgentManager::EraseAllAgents(std::vector<Agent>& allAgents);
 
 	//! Whether the game will render agent stats
-	bool renderStats = true;
+	bool renderStats = false;
 
 	//! Whether the game will draw the agent paths
 	bool drawAgentPaths = false;

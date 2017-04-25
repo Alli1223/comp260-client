@@ -44,6 +44,7 @@ void CellRendering::RenderCells(Level& level, SDL_Renderer* renderer, int x, int
 	// Checks if the cell is a room
 	if (level.grid[x][y]->isRoom)
 	{
+		roomCell.alterTextureColour(level.grid[x][y]->noiseValue, 0, 0);
 		oxygenTex.alterTransparency(level.grid[x][y]->oxygenLevel);
 		roomCell.render(renderer, xPos, yPos, cellSize, cellSize);
 		oxygenTex.render(renderer, xPos, yPos, cellSize, cellSize);

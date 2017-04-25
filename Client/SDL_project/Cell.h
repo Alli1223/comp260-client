@@ -67,6 +67,8 @@ public:
 	bool isHydroponicsBay = false;
 	std::string hydroponicsOrientation = "NA";
 
+	double noiseValue = 0;
+
 	//! Whether the cell is a bed
 	bool isBed = false;
 	//! Wehther the cell is a bed and in use

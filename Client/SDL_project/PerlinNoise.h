@@ -27,5 +27,9 @@ public:
 
 	//! For gradient function
 	double grad(int hash, double x, double y, double z);
+
+	float getNoiseAmp() { return noiseAmp; }
+private:
+	double noiseAmp = 180.0;
 };
 

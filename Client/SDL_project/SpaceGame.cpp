@@ -189,22 +189,23 @@ void SpaceGame::run()
 		int playerX = 0, playerY = 0;
 		if (agentManager.allAgents.size() >= 1)
 		{
-			//playerX = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getX();
-			//playerY = agentManager.allAgents[agentManager.GetAgentNumberFomID(playerName)].getY();
+			playerX = agentManager.allAgents[0].getX() / cellSize;
+			playerY = agentManager.allAgents[0].getY();
 		}
 
 		//////////////////////////////////
 		//MAIN CELL LOOP
 		///////////////////////////////////
 
-		for (int x = 0; x < level.grid.size(); x++)
+		for (int x = 0; x < level.grid.size() ; x++)
 		{
 			for (int y = 0; y < level.grid[0].size(); y++)
 			{
-				double noise = perlinNoise.noise((double)x / 180.0, (double)y / 180.0, (double)x / 180.0);
-				//terrainHeight = (char)((terrainHeight - noiseMin) * (255 / (noiseMax - noiseMin)));
-				
-				level.grid[x][y]->noiseValue = noise * 500;
+				double noise = perlinNoise.noise((double)x / 180.0, (double)y / 180.0, 0.0);
+				//noise = (char)((noise - 0) * (255 / (noise - 0)));
+
+				level.grid[x][y]->noiseValue = noise  * 1000;
+
 				//Renders all he cells
 				cellrenderer.RenderCells(level, renderer, x, y);
 
